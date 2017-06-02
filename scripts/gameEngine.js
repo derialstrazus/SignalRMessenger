@@ -1,18 +1,37 @@
-var farmesPerSecond = 30;
+var framesPerSecond = 30;
 
 var canvas = document.getElementById("gameCanvas");
 var canvasContext = canvas.getContext('2d');
 
-function initialize () {  
+function setup () {
   console.log("initializing...");
 
   canvas.addEventListener('mousemove', function(evt) {
-	  var mousePos = calculateMousePos(evt);
-    console.log(`X: ${mousePos.x}, Y: ${mousePos.y}`);
+	  calculateMousePos(evt);
+    console.log(`X: ${mouseX}, Y: ${mouseY}`);
 	});
+}
 
+function initializeChess() {
   setInterval(function () {
-    drawEverything();
+    drawChessBoard();
+  }, 1000/framesPerSecond);
+}
+
+function initializeTic() {
+  setInterval(function () {
+    drawBackground();
+    drawTicBoard();
     oscillate();
   }, 1000/framesPerSecond);
+}
+
+
+
+
+
+
+function drawBackground() {
+  canvasContext.fillStyle = 'white';
+  canvasContext.fillRect(0, 0, canvas.width, canvas.height);
 }
