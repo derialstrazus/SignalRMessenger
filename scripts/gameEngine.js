@@ -32,6 +32,6 @@ function initializeTic() {
 
 
 function drawBackground() {
-  canvasContext.fillStyle = 'white';
+  canvasContext.fillStyle = '#e74c3c';
   canvasContext.fillRect(0, 0, canvas.width, canvas.height);
 }

@@ -1,26 +1,33 @@
+const speed = 3;
+
 var ball = {
-  posX: canvas.width - 30,
-  posY: canvas.height - 20,
-  velX: 0,
-  velY: 1,
+  posX: 0,
+  posY: canvas.height - 5,
+  velX: speed,
+  velY: 0,
 };
 
 const oscillatorBox = {
-  borderT: canvas.height - 40,
-  borderL: canvas.width - 40,
-  borderB: canvas.height - 20,
-  borderR: canvas.width - 20,
+  borderT: 0,
+  borderL: 0,
+  borderB: canvas.height,
+  borderR: canvas.width,
 };
 
 function oscillate() {
   if (ball.posY > oscillatorBox.borderB) {
-    ball.velY = -1;
+    ball.velY = -speed;
   } else if (ball.posY < oscillatorBox.borderT) {
-    ball.velY = 1;
+    ball.velY = speed;
+  } else if (ball.posX > oscillatorBox.borderR) {
+    ball.velX = -speed;
+  } else if (ball.posX < oscillatorBox.borderL) {
+    ball.velX = speed;
   }
 
   ball.posY += ball.velY;
+  ball.posX += ball.velX;
 
-  canvasContext.fillStyle = 'red';
+  canvasContext.fillStyle = '#3498db';
   canvasContext.fillRect(ball.posX, ball.posY, 5, 5);
 }

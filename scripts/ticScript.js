@@ -18,13 +18,13 @@ for (let i = 1; i <= ticBackground.rows; i++) {
 }
 
 function drawTicBoard() {
-  canvasContext.fillStyle = 'white';
+  canvasContext.fillStyle = '#ecf0f1';
   canvasContext.fillRect(0, 0, canvas.width, canvas.height);
 
   for (let i = 0; i < ticBackground.locationArr.length; i++) {
     var box = ticBackground.locationArr[i];
     if ((box.rowX + box.colY) % 2 == 0) {
-      canvasContext.fillStyle = 'grey';
+      canvasContext.fillStyle = '#95a5a6';
       canvasContext.fillRect(box.posX, box.posY, ticBackground.boxWidth, ticBackground.boxHeight);
     }
   }
