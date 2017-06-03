@@ -4,13 +4,13 @@ const TILE_W = canvas.width / TILE_COLS;
 const TILE_H = canvas.height / TILE_ROWS;
 var tileGrid = [];
 
-for (let i = 1; i <= TILE_ROWS; i++) {
-  for (let j = 1; j <= TILE_COLS; j++) {
+for (let i = 0; i < TILE_ROWS; i++) {
+  for (let j = 0; j < TILE_COLS; j++) {
     tileGrid.push({
       rowX: i,
-      colY: j,      
-      posX: (i - 1) * TILE_W,
-      posY: canvas.height - ((j) * TILE_H),
+      colY: j,
+      posX: j * TILE_W,
+      posY: i * TILE_H
     });
   }
 }
@@ -26,4 +26,12 @@ function drawTicBoard() {
       canvasContext.fillRect(box.posX, box.posY, TILE_W, TILE_H);
     }
   }
+
+  for (let i = 0; i < tileGrid.length; i++) {
+    var box = tileGrid[i];    
+    canvasContext.fillStyle = 'black';
+    canvasContext.font = "10px";
+    canvasContext.fillText(i, box.posX + 10, box.posY + 20);
+  }
 }
+

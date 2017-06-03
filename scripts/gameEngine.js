@@ -7,7 +7,7 @@ function setup () {
   console.log("initializing...");
 
   canvas.addEventListener('mousemove', function(evt) {
-	  calculateMousePos(evt);
+	  mouseMoveEvent(evt);
 	});
 
   canvas.addEventListener('mousedown', function (evt) {
@@ -37,7 +37,7 @@ var mouseY;
 var selectedIdx = -1;
 var tileOverId = -1;
 
-function calculateMousePos(evt) {
+function mouseMoveEvent(evt) {
 	var rect = canvas.getBoundingClientRect();
 	var root = document.documentElement;
 	mouseX = evt.clientX - rect.left - root.scrollLeft;
@@ -55,11 +55,12 @@ function calculateMousePos(evt) {
 }
 
 function tileCoordToIndex(tileCol, tileRow) {
-	return (tileCol + TILE_COLS*tileRow);
+	return (tileCol + TILE_COLS * tileRow);
 }
 
 function mouseClickedEvent(evt) {
   selectedIdx = tileOverIdx;
+  console.log(selectedIdx);
 }
 
 
