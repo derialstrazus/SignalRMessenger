@@ -8,13 +8,13 @@ function setup () {
 
   canvas.addEventListener('mousemove', function(evt) {
 	  calculateMousePos(evt);
-    console.log(`X: ${mouseX}, Y: ${mouseY}`);
 	});
 }
 
 function initializeChess() {
   setInterval(function () {
     drawChessBoard();
+    oscillate();
   }, 1000/framesPerSecond);
 }
 

@@ -1,18 +1,17 @@
-const ticBackground = {
-  rows: 3,
-  cols: 3,
-  boxWidth: canvas.width / 3,
-  boxHeight: canvas.height / 3,
-  locationArr: []
-}
-for (let i = 1; i <= ticBackground.rows; i++) {
-  for (let j = 1; j <= ticBackground.cols; j++) {
-    ticBackground.locationArr.push({
+const TILE_ROWS = 3;
+const TILE_COLS = 3;
+const TILE_W = canvas.width / TILE_COLS;
+const TILE_H = canvas.height / TILE_ROWS;
+var tileGrid = [];
+
+for (let i = 1; i <= TILE_ROWS; i++) {
+  for (let j = 1; j <= TILE_COLS; j++) {
+    tileGrid.push({
       rowX: i,
       colY: j,
       letterY: String.fromCharCode(64 + j),
-      posX: (i - 1) * ticBackground.boxWidth,
-      posY: canvas.height - ((j) * ticBackground.boxHeight),
+      posX: (i - 1) * TILE_W,
+      posY: canvas.height - ((j) * TILE_H),
     });
   }
 }
@@ -21,11 +20,11 @@ function drawTicBoard() {
   canvasContext.fillStyle = '#ecf0f1';
   canvasContext.fillRect(0, 0, canvas.width, canvas.height);
 
-  for (let i = 0; i < ticBackground.locationArr.length; i++) {
-    var box = ticBackground.locationArr[i];
+  for (let i = 0; i < tileGrid.length; i++) {
+    var box = tileGrid[i];
     if ((box.rowX + box.colY) % 2 == 0) {
       canvasContext.fillStyle = '#95a5a6';
-      canvasContext.fillRect(box.posX, box.posY, ticBackground.boxWidth, ticBackground.boxHeight);
+      canvasContext.fillRect(box.posX, box.posY, TILE_W, TILE_H);
     }
   }
 }
