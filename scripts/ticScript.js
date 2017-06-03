@@ -8,8 +8,7 @@ for (let i = 1; i <= TILE_ROWS; i++) {
   for (let j = 1; j <= TILE_COLS; j++) {
     tileGrid.push({
       rowX: i,
-      colY: j,
-      letterY: String.fromCharCode(64 + j),
+      colY: j,      
       posX: (i - 1) * TILE_W,
       posY: canvas.height - ((j) * TILE_H),
     });
