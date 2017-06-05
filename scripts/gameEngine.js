@@ -36,7 +36,7 @@ function initializeTic() {
 var mouseX;
 var mouseY;
 var selectedIdx = -1;
-var tileOverId = -1;
+var tileOverIdx = -1;
 
 function mouseMoveEvent(evt) {
 	var rect = canvas.getBoundingClientRect();
@@ -46,7 +46,7 @@ function mouseMoveEvent(evt) {
 
 	var tileOverCol = Math.floor(mouseX / TILE_W);
 	var tileOverRow = Math.floor(mouseY / TILE_H);
-	tileOverId = tileCoordToIndex(tileOverCol, tileOverRow);
+	tileOverIdx = tileCoordToIndex(tileOverCol, tileOverRow);
 
   mouseHoverTile();	
 }
@@ -57,7 +57,7 @@ function tileCoordToIndex(tileCol, tileRow) {
 
 function mouseClickedEvent(evt) {
   selectedIdx = tileOverIdx;
-  console.log(selectedIdx);
+  ticMouseClicked(selectedIdx);  
 }
 
 

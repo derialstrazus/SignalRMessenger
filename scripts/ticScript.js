@@ -18,14 +18,15 @@ for (let i = 0; i < TILE_ROWS; i++) {
   }
 }
 
-tileGrid[2].state = 1
-tileGrid[3].state = 1
-tileGrid[6].state = 2
-tileGrid[7].state = 1
-
 function drawTicBoard() {
   canvasContext.fillStyle = '#ecf0f1';
   canvasContext.fillRect(0, 0, canvas.width, canvas.height);
+
+  canvasContext.fillStyle = 'black';
+  canvasContext.textAlign = "center";
+  canvasContext.textBaseline = "middle";
+  var fontSize = (TILE_W * 0.8).toString();
+  canvasContext.font = fontSize + "px Short Stack";
 
   for (let i = 0; i < tileGrid.length; i++) {
     var box = tileGrid[i];
@@ -38,15 +39,21 @@ function drawTicBoard() {
   for (let i = 0; i < tileGrid.length; i++) {
     var box = tileGrid[i];
 
-    // canvasContext.fillStyle = 'black';
-    // canvasContext.font = "10px Arial";
-    // canvasContext.fillText(i, box.posX + 10, box.posY + 20);
+    canvasContext.fillStyle = 'black';
+    if (box.state == 1) {
+      canvasContext.fillText("X", box.posX + TILE_W / 2, box.posY + TILE_H / 2);
+    } else if (box.state == 2) {
+      canvasContext.fillText("O", box.posX + TILE_W / 2, box.posY + TILE_H / 2);
+    }
+
+
+
 
     //TODO: if box.state == 1, print X
     //TODO: if box.state == 2, print O
 
     //Draw on mouse location
-    if (i == tileOverId) {
+    if (i == tileOverIdx) {
       outlineTile(box.posX, box.posY, TILE_W, TILE_H);
       ghostMove();
     }
@@ -67,18 +74,17 @@ function drawTicBoard() {
 
   function ghostMove() {
     var showText;
-    if (playerTurn == 1) {      
+    if (playerTurn == 1) {
       showText = "X";
-    } else {      
+    } else {
       showText = "O";
     }
-        
-    canvasContext.fillStyle = 'grey';
-    canvasContext.textAlign = "center";
-    canvasContext.textBaseline = "middle";
-    var fontSize = (TILE_W * 0.8).toString();
-    canvasContext.font = fontSize + "px Short Stack";
-    canvasContext.fillText(showText, box.posX + TILE_W / 2, box.posY + TILE_H / 2);
+
+    if (tileGrid[tileOverIdx].state === 0) {
+      canvasContext.fillStyle = 'grey';
+      canvasContext.fillText(showText, box.posX + TILE_W / 2, box.posY + TILE_H / 2);
+    }
+
   }
 }
 
@@ -101,6 +107,18 @@ function drawTicHUD() {
 function mouseHoverTile() {
 
 
+
+}
+
+function ticMouseClicked(selectedIdx) {
+  if (tileGrid[tileOverIdx].state === 0) {
+    tileGrid[selectedIdx].state = playerTurn;
+    if (playerTurn == 1) {
+      playerTurn = 2;
+    } else {
+      playerTurn = 1;
+    }
+  }
 
 }
 
