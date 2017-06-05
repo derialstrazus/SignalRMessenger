@@ -22,19 +22,23 @@ function drawTicBoard() {
   canvasContext.fillStyle = '#ecf0f1';
   canvasContext.fillRect(0, 0, canvas.width, canvas.height);
 
-  canvasContext.fillStyle = 'black';
-  canvasContext.textAlign = "center";
-  canvasContext.textBaseline = "middle";
-  var fontSize = (TILE_W * 0.8).toString();
-  canvasContext.font = fontSize + "px Short Stack";
-
   for (let i = 0; i < tileGrid.length; i++) {
     var box = tileGrid[i];
     if ((box.rowX + box.colY) % 2 == 0) {
       canvasContext.fillStyle = '#95a5a6';
       canvasContext.fillRect(box.posX, box.posY, TILE_W, TILE_H);
     }
+    
+    canvasContext.font = "10px Arial";
+    canvasContext.fillStyle = 'black';
+    canvasContext.fillText(i, box.posX + 10, box.posY + 10);
   }
+
+  canvasContext.fillStyle = 'black';
+  canvasContext.textAlign = "center";
+  canvasContext.textBaseline = "middle";
+  var fontSize = (TILE_W * 0.8).toString();
+  canvasContext.font = fontSize + "px Short Stack";
 
   for (let i = 0; i < tileGrid.length; i++) {
     var box = tileGrid[i];
@@ -45,12 +49,6 @@ function drawTicBoard() {
     } else if (box.state == 2) {
       canvasContext.fillText("O", box.posX + TILE_W / 2, box.posY + TILE_H / 2);
     }
-
-
-
-
-    //TODO: if box.state == 1, print X
-    //TODO: if box.state == 2, print O
 
     //Draw on mouse location
     if (i == tileOverIdx) {
@@ -111,14 +109,28 @@ function mouseHoverTile() {
 }
 
 function ticMouseClicked(selectedIdx) {
-  if (tileGrid[tileOverIdx].state === 0) {
-    tileGrid[selectedIdx].state = playerTurn;
-    if (playerTurn == 1) {
-      playerTurn = 2;
-    } else {
-      playerTurn = 1;
+  if (!checkVictoryCondition()){
+
+  
+    if (tileGrid[tileOverIdx].state === 0) {
+      tileGrid[selectedIdx].state = playerTurn;
+      if (playerTurn == 1) {
+        playerTurn = 2;
+      } else {
+        playerTurn = 1;
+      }
     }
+
+  }
+}
+
+function checkVictoryCondition(){
+  if (tileGrid[0].state == 1) {
+    return true;
+  } else {
+    return false;
   }
 
+  return false;
 }
 

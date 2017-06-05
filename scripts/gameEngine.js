@@ -28,6 +28,7 @@ function initializeTic() {
     drawTicBoard();    
     drawTicHUD();
     //oscillate();
+    //TODO: Add checkVictoryCondition();
   }, 1000/framesPerSecond);
 }
 
