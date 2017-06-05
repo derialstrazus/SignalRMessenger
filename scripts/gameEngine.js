@@ -26,6 +26,7 @@ function initializeTic() {
   setInterval(function () {
     drawBackground();
     drawTicBoard();
+    drawTicHUD();
     oscillate();
   }, 1000/framesPerSecond);
 }
@@ -45,13 +46,9 @@ function mouseMoveEvent(evt) {
 
 	var tileOverCol = Math.floor(mouseX / TILE_W);
 	var tileOverRow = Math.floor(mouseY / TILE_H);
-	tileOverIdx = tileCoordToIndex(tileOverCol, tileOverRow);
+	tileOverId = tileCoordToIndex(tileOverCol, tileOverRow);
 
-	return {
-		x:mouseX,
-		y:mouseY,
-		idx: tileOverIdx
-	};
+  mouseHoverTile();	
 }
 
 function tileCoordToIndex(tileCol, tileRow) {
