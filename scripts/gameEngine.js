@@ -25,9 +25,9 @@ function initializeChess() {
 function initializeTic() {
   setInterval(function () {
     drawBackground();
-    drawTicBoard();
+    drawTicBoard();    
     drawTicHUD();
-    oscillate();
+    //oscillate();
   }, 1000/framesPerSecond);
 }
 

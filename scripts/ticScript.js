@@ -37,12 +37,15 @@ function drawTicBoard() {
 
   for (let i = 0; i < tileGrid.length; i++) {
     var box = tileGrid[i];
-    canvasContext.fillStyle = 'black';
-    canvasContext.font = "10px";
-    canvasContext.fillText(i, box.posX + 10, box.posY + 20);
 
+    // canvasContext.fillStyle = 'black';
+    // canvasContext.font = "10px Arial";
+    // canvasContext.fillText(i, box.posX + 10, box.posY + 20);
 
+    //TODO: if box.state == 1, print X
+    //TODO: if box.state == 2, print O
 
+    //Draw on mouse location
     if (i == tileOverId) {
       outlineTile(box.posX, box.posY, TILE_W, TILE_H);
       ghostMove();
@@ -63,23 +66,34 @@ function drawTicBoard() {
   }
 
   function ghostMove() {
-    if (playerTurn == 1) {
-      playerColor = "green"
-    } else {
-      playerColor = "red"
+    var showText;
+    if (playerTurn == 1) {      
+      showText = "X";
+    } else {      
+      showText = "O";
     }
-    
-    canvasContext.fillStyle = 'blue';
-    canvasContext.font = "20px";
-    canvasContext.fillText("hello", box.posX + 50, box.posY + 50);
+        
+    canvasContext.fillStyle = 'grey';
+    canvasContext.textAlign = "center";
+    canvasContext.textBaseline = "middle";
+    var fontSize = (TILE_W * 0.8).toString();
+    canvasContext.font = fontSize + "px Short Stack";
+    canvasContext.fillText(showText, box.posX + TILE_W / 2, box.posY + TILE_H / 2);
   }
 }
 
 function drawTicHUD() {
   canvasContext.fillStyle = 'black';
-  canvasContext.font = "10px";
-  var message = "player turn: " + playerTurn;
-  canvasContext.fillText(message, canvas.width - TILE_W + 50, canvas.height - 10);
+  canvasContext.textAlign = "center";
+  canvasContext.textBaseline = "middle";
+  canvasContext.font = "10px Arial";
+  var playerString = "";
+  if (playerTurn == 1)
+    playerString = "X";
+  else
+    playerString = "O";
+  var message = "player turn: " + playerString;
+  canvasContext.fillText(message, canvas.width - TILE_W / 2, canvas.height - 10);
 }
 
 
