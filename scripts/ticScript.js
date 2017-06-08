@@ -3,6 +3,7 @@ const TILE_COLS = 3;
 const TILE_W = canvas.width / TILE_COLS;
 const TILE_H = canvas.height / TILE_ROWS;
 var tileGrid = [];
+var gameState = 0;
 
 var playerTurn = 1;
 
@@ -57,6 +58,14 @@ function drawTicBoard() {
     }
   }
 
+  if (gameState > 0) {
+    canvasContext.fillStyle = 'red';
+    canvasContext.textAlign = "center";
+    canvasContext.textBaseline = "middle";    
+    canvasContext.font = "50px Arial";
+    canvasContext.fillText("Player " + gameState + " wins!", canvas.width / 2, canvas.height / 2);
+  }
+
   function outlineTile(topLeftX, topLeftY, boxWidth, boxHeight) {
     if (playerTurn == 1)
       playerColor = "green"
@@ -78,7 +87,7 @@ function drawTicBoard() {
       showText = "O";
     }
 
-    if (tileGrid[tileOverIdx].state === 0) {
+    if (tileGrid[tileOverIdx].state === 0 && (gameState == 0)) {
       canvasContext.fillStyle = 'grey';
       canvasContext.fillText(showText, box.posX + TILE_W / 2, box.posY + TILE_H / 2);
     }
@@ -109,11 +118,12 @@ function mouseHoverTile() {
 }
 
 function ticMouseClicked(selectedIdx) {
-  if (!checkVictoryCondition()){
-
+  if (gameState == 0){
   
     if (tileGrid[tileOverIdx].state === 0) {
       tileGrid[selectedIdx].state = playerTurn;
+      if (checkVictoryCondition())
+        gameState = playerTurn;
       if (playerTurn == 1) {
         playerTurn = 2;
       } else {
@@ -124,8 +134,17 @@ function ticMouseClicked(selectedIdx) {
   }
 }
 
-function checkVictoryCondition(){
-  if (tileGrid[0].state == 1) {
+function checkVictoryCondition(){  
+  
+  if ((tileGrid[0].state == playerTurn && tileGrid[1].state == playerTurn && tileGrid[2].state == playerTurn) ||
+      (tileGrid[3].state == playerTurn && tileGrid[4].state == playerTurn && tileGrid[5].state == playerTurn) ||
+      (tileGrid[6].state == playerTurn && tileGrid[7].state == playerTurn && tileGrid[8].state == playerTurn) ||
+      (tileGrid[0].state == playerTurn && tileGrid[3].state == playerTurn && tileGrid[6].state == playerTurn) ||
+      (tileGrid[1].state == playerTurn && tileGrid[4].state == playerTurn && tileGrid[7].state == playerTurn) ||
+      (tileGrid[2].state == playerTurn && tileGrid[5].state == playerTurn && tileGrid[8].state == playerTurn) ||
+      (tileGrid[0].state == playerTurn && tileGrid[4].state == playerTurn && tileGrid[8].state == playerTurn) ||
+      (tileGrid[2].state == playerTurn && tileGrid[4].state == playerTurn && tileGrid[6].state == playerTurn))
+  {
     return true;
   } else {
     return false;

@@ -1,4 +1,4 @@
-var framesPerSecond = 30;
+var framesPerSecond = 15;
 
 var canvas = document.getElementById("gameCanvas");
 var canvasContext = canvas.getContext('2d');
