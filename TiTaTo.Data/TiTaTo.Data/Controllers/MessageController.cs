@@ -5,44 +5,46 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using TiTaTo.Data.Models;
+using TiTaTo.Data.DataAccess;
 
 namespace TiTaTo.Data.Controllers
 {
-    public class MessageController : ApiController
+  public class MessageController : ApiController
+  {
+    MessageBox s1 = MessageBox.Instance;
+
+    public IEnumerable<Message> GetAllMessages()
     {
-        Message[] messages = new Message[]
-        {
-            new Message { ID = 1, Sender = "Derek", Receiver = "Benedict", Content = "Hello"},
-            new Message { ID = 2, Sender = "Benedict", Receiver = "Derek", Content = "Hello Back!"},
-            new Message { ID = 3, Sender = "Derek", Receiver = "Benedict", Content = "Goodbye"},
-            new Message { ID = 4, Sender = "Derek", Receiver = "Adrian", Content = "Hello"}
-        };
-
-        public IEnumerable<Message> GetAllMessages()
-        {
-            return messages;
-        }
-
-        public IHttpActionResult GetMessage(int ID)
-        {
-            var message = messages.FirstOrDefault(m => m.ID == ID);
-            if (message == null)
-            {
-                return NotFound();
-            }
-            return Ok(message);
-        }
-
-      [HttpPut, Route("api/message/{ID}/{newContent}")]
-      public IHttpActionResult UpdateMessage(int ID, string newContent)
-      {
-         var message = messages.FirstOrDefault(m => m.ID == ID);
-         if (message == null) {
-            return NotFound();
-         } else {
-            message.Content = newContent;
-         }
-         return Ok(message);
-      }
+      return s1.messages;
     }
+
+    public IHttpActionResult GetMessage(int ID)
+    {
+      var message = s1.messages.FirstOrDefault(m => m.ID == ID);
+      if (message == null) {
+        return NotFound();
+      }
+      return Ok(message);
+    }
+
+    [HttpPost]
+    public IHttpActionResult NewMessage()
+    {
+      s1.messages.Add(new Message { ID = 10, Sender = "1232", Receiver = "awefea", Content = "Hello"});
+      return Ok(s1.messages);
+    }
+
+    [HttpPut, Route("api/message/{ID}/{newContent}")]
+    public IHttpActionResult UpdateMessage(int ID, string newContent)
+    {
+      var message = s1.messages.FirstOrDefault(m => m.ID == ID);
+      if (message == null) {
+        return NotFound();
+      }
+      else {
+        message.Content = newContent;
+      }
+      return Ok(message);
+    }
+  }
 }
