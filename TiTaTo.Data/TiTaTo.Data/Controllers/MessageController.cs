@@ -32,5 +32,17 @@ namespace TiTaTo.Data.Controllers
             }
             return Ok(message);
         }
+
+      [HttpPut, Route("api/message/{ID}/{newContent}")]
+      public IHttpActionResult UpdateMessage(int ID, string newContent)
+      {
+         var message = messages.FirstOrDefault(m => m.ID == ID);
+         if (message == null) {
+            return NotFound();
+         } else {
+            message.Content = newContent;
+         }
+         return Ok(message);
+      }
     }
 }
