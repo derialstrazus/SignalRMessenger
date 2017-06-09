@@ -1,0 +1,11 @@
+@font-face { font-family: Short Stack; src: url('../fonts/ShortStack-Regular.ttf'); }
+/*@font-face { font-family: Julee; src: url('https://fonts.googleapis.com/css?family=Julee'); }
+@font-face { font-family: Merienda; src: url('https://fonts.googleapis.com/css?family=Merienda'); }
+@font-face { font-family: Rock Salt; src: url('https://fonts.googleapis.com/css?family=Rock+Salt'); }*/
+
+#gameArea {
+  background-color: burlywood;
+  padding: 20px;
+  min-width: 100px;
+  height: auto;
+}

@@ -1,0 +1,29 @@
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="./library/styles/game.css">    
+</head>
+
+<body>
+  <h1 style="font-family:'Short Stack'">Hello!</h1>
+  <div id="testcontainer"></div>
+  <div>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+  </div>
+     
+  <script type="text/javascript" src="./library/scripts/jquery-3.1.1.js"></script>
+  <script type="text/javascript" src="./library/scripts/utils.js"></script>
+  <script type="text/javascript" src="./library/scripts/gameEngine.js"></script>
+  <!--<script type="text/javascript" src="./library/scripts/chessScript.js"></script>-->
+  <script type="text/javascript" src="./library/scripts/ticScript.js"></script>
+  <script type="text/javascript" src="./library/scripts/oscillateScript.js"></script>
+  <script>
+    $(document).ready(function () {
+      setup();
+      initializeTic();
+      //initializeChess();
+    });
+  </script>
+</body>
+
+</html>
