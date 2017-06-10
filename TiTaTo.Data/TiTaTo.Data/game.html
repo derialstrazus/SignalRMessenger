@@ -11,7 +11,13 @@
         <canvas id="gameCanvas" width="400" height="400"></canvas>
     </div>
 
-    <script type="text/javascript" src="./library/scripts/jquery-3.1.1.js"></script>
+    <hr />
+
+    <div>
+        <ul id="products"></ul>
+    </div>
+
+    <script type="text/javascript" src="./library/scripts/vendor/jquery-3.1.1.js"></script>
     <script type="text/javascript" src="./library/scripts/utils.js"></script>
     <script type="text/javascript" src="./library/scripts/gameEngine.js"></script>
     <!--<script type="text/javascript" src="./library/scripts/chessScript.js"></script>-->
@@ -22,6 +28,18 @@
             setup();
             initializeTic();
             //initializeChess();
+
+            APIGet("api/message", null, successMethod, null);
+
+            function successMethod (data) {
+                $.each(data, function (key, item) {
+                    $("<li>", { text: formatItem(item) }).appendTo($("#products"));
+                });
+            }
+
+            function formatItem(item) {
+                return item.Sender + ' to ' + item.Receiver + ': ' + item.Content;
+            }
         });
     </script>
 </body>

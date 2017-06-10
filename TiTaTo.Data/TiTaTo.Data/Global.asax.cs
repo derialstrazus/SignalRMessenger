@@ -14,7 +14,7 @@ namespace TiTaTo.Data
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
-            MessageBox s1 = MessageBox.Instance;
+            SingletonDB s1 = SingletonDB.Instance;
             s1.Initialize();
         }
     }

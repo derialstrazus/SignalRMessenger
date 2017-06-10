@@ -11,16 +11,16 @@ namespace TiTaTo.Data.Controllers
 {
     public class MessageController : ApiController
     {
-        MessageBox s1 = MessageBox.Instance;
+        SingletonDB s1 = SingletonDB.Instance;
 
         public IEnumerable<Message> GetAllMessages()
         {
-            return s1.messages;
+            return s1.Messages;
         }
 
         public IHttpActionResult GetMessage(int ID)
         {
-            var message = s1.messages.FirstOrDefault(m => m.ID == ID);
+            var message = s1.Messages.FirstOrDefault(m => m.ID == ID);
             if (message == null)
             {
                 return NotFound();
@@ -31,14 +31,14 @@ namespace TiTaTo.Data.Controllers
         [HttpPost]
         public IHttpActionResult NewMessage()
         {
-            s1.messages.Add(new Message { ID = 10, Sender = "1232", Receiver = "awefea", Content = "Hello" });
-            return Ok(s1.messages);
+            s1.Messages.Add(new Message { ID = 10, Sender = "1232", Receiver = "awefea", Content = "Hello" });
+            return Ok(s1.Messages);
         }
 
         [HttpPut, Route("api/message/{ID}/{newContent}")]
         public IHttpActionResult UpdateMessage(int ID, string newContent)
         {
-            var message = s1.messages.FirstOrDefault(m => m.ID == ID);
+            var message = s1.Messages.FirstOrDefault(m => m.ID == ID);
             if (message == null)
             {
                 return NotFound();
