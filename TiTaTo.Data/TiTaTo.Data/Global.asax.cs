@@ -8,13 +8,14 @@ using TiTaTo.Data.DataAccess;
 
 namespace TiTaTo.Data
 {
-  public class WebApiApplication : System.Web.HttpApplication
-  {
-    protected void Application_Start()
+    public class WebApiApplication : System.Web.HttpApplication
     {
-      GlobalConfiguration.Configure(WebApiConfig.Register);
-      MessageBox s1 = MessageBox.Instance;
-      s1.Initialize();
+        protected void Application_Start()
+        {
+            GlobalConfiguration.Configure(WebApiConfig.Register);
+
+            MessageBox s1 = MessageBox.Instance;
+            s1.Initialize();
+        }
     }
-  }
 }
