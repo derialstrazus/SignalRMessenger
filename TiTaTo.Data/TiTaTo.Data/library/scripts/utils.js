@@ -5,21 +5,19 @@ function findTileCenter(posX, posY) {
     return { x: centerX, y: centerY }
 }
 
-
-
-
-
-
-
-
+//========================== API CALLS ==================================
 function APIGet(path, options, successMethod, failureMethod) {
     $.get(path).then(
         function (data) {
-            successMethod(data)
+            if (successMethod !== null && successMethod !== undefined)
+                successMethod(data);
         },
         function (xhr, status, error) {
-            failureMethod();
             console.log("There was an error completing the request.  Status: " + xhr.statusText);
+            console.log(xhr.responseJSON.ExceptionMessage);
+            if (failureMethod !== null && failureMethod !== undefined) {
+                failureMethod(xhr, status, error);
+            }
         });
 }
 
@@ -28,7 +26,7 @@ function APIPost(path, options, successMethod, failureMethod) {
         url: path,
         data: options,
         dataType: "json",
-        type: "POST"
+        method: "POST"
     }
     $.ajax(params).then(
         function (data) {
@@ -40,7 +38,7 @@ function APIPost(path, options, successMethod, failureMethod) {
             console.log(xhr.responseJSON.ExceptionMessage);
             if (failureMethod !== null && failureMethod !== undefined) {
                 failureMethod(xhr, status, error);
-            }                        
+            }
         });
 }
 
@@ -48,15 +46,20 @@ function APIPut() {
     var params = {
         url: path,
         data: options,
+        dataType: "json",
         method: "PUT"
     }
     $.ajax(params).then(
         function (data) {
-            successMethod(data)
+            if (successMethod !== null && successMethod !== undefined)
+                successMethod(data);
         },
         function (xhr, status, error) {
-            failureMethod();
             console.log("There was an error completing the request.  Status: " + xhr.statusText);
+            console.log(xhr.responseJSON.ExceptionMessage);
+            if (failureMethod !== null && failureMethod !== undefined) {
+                failureMethod(xhr, status, error);
+            }
         });
 }
 
@@ -64,15 +67,20 @@ function APIDelete() {
     var params = {
         url: path,
         data: options,
+        dataType: "json",
         method: "DELETE"
     }
     $.ajax(params).then(
         function (data) {
-            successMethod(data)
+            if (successMethod !== null && successMethod !== undefined)
+                successMethod(data);
         },
         function (xhr, status, error) {
-            failureMethod();
             console.log("There was an error completing the request.  Status: " + xhr.statusText);
+            console.log(xhr.responseJSON.ExceptionMessage);
+            if (failureMethod !== null && failureMethod !== undefined) {
+                failureMethod(xhr, status, error);
+            }
         });
 }
 

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using TiTaTo.Data.DataAccess;
+using TiTaTo.Data.Models;
 
 namespace TiTaTo.Data.Controllers
 {
@@ -35,7 +33,9 @@ namespace TiTaTo.Data.Controllers
                 s1.Users.RemoveAll(x => x.Name == name);
                 return InternalServerError(ex);
             }
-            
+
         }
+
+
     }
 }
