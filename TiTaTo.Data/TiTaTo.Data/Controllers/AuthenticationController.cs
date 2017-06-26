@@ -15,27 +15,16 @@ namespace TiTaTo.Data.Controllers
         {
             try
             {
-                if (s1.Users.Any(x => x.Name.ToLower() == name.ToLower()))
-                {
-                    var message = "This name has already been taken.";
-                    return InternalServerError(new Exception(message));
-                }
-                else
-                {
-                    Guid g = Guid.NewGuid();
-                    s1.Users.Add(new Models.User { ID = g, Name = name });
-                    var returnThis = s1.Users.First(x => x.Name == name);
-                    return Ok(returnThis);
-                }
+                Guid g = Guid.NewGuid();
+                s1.Users.Add(new User { ID = g, Name = name, LastOnline = DateTime.Now });
+                var returnThis = s1.Users.First(x => x.ID == g);
+                return Ok(returnThis);
             }
             catch (Exception ex)
             {
                 s1.Users.RemoveAll(x => x.Name == name);
                 return InternalServerError(ex);
             }
-
         }
-
-
     }
 }

@@ -6,6 +6,10 @@ function findTileCenter(posX, posY) {
 }
 
 //========================== API CALLS ==================================
+//TODO: Add GUID ID to header.  
+//On back, use header to verify that user is logged in.
+//If no GUID present, create alert and bounce user back to login page.
+
 function APIGet(path, options, successMethod, failureMethod) {
     $.get(path).then(
         function (data) {

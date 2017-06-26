@@ -10,11 +10,16 @@
     });
 }
 
-function loginSuccess(data) {    
-    sessionStorage.setItem("ID", data.ID);
-    sessionStorage.setItem("Name", data.Name);    
+function loginSuccess(data) {
+    if (data.ID !== null && data.ID !== undefined) {
+        sessionStorage.setItem("ID", data.ID);
+        sessionStorage.setItem("Name", data.Name);
 
-    window.location.href = "/game.html";
+        window.location.href = "/game.html";
+    } else {
+        alert("No GUID returned");
+    }
+    
 }
 
 function loginFailure(xhr, status, error) {    

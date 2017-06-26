@@ -10,5 +10,8 @@ namespace TiTaTo.Data.Models
         public Guid ID { get; set; }
         public string Name { get; set; }
 
+        //TODO: each API call should update LastOnline.
+        //Find a way to periodically clean out singletonDB if LastOnline exceeds 30 min.
+        public DateTime LastOnline { get; set; }
     }
 }
