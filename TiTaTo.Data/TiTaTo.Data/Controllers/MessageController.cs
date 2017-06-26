@@ -29,9 +29,9 @@ namespace TiTaTo.Data.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult NewMessage()
+        public IHttpActionResult NewMessage([FromBody]Message message)
         {
-            s1.Messages.Add(new Message { ID = 10, Sender = "1232", Receiver = "awefea", Content = "Hello" });
+            s1.Messages.Add(message);
             return Ok(s1.Messages);
         }
 

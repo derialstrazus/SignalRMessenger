@@ -33,6 +33,10 @@ namespace TiTaTo.Data.DataAccess
             Messages.Add(new Message { ID = 2, Sender = "Benedict", Receiver = "Derek", Content = "Hello Back!" });
             Messages.Add(new Message { ID = 3, Sender = "Derek", Receiver = "Benedict", Content = "Goodbye" });
             Messages.Add(new Message { ID = 4, Sender = "Derek", Receiver = "Adrian", Content = "Hello" });
+
+            Users.Add(new User { ID = Guid.NewGuid(), Name = "Bob" });
+            Users.Add(new User { ID = Guid.NewGuid(), Name = "Dave" });
+            Users.Add(new User { ID = Guid.NewGuid(), Name = "Jim" });
         }
     }
 }

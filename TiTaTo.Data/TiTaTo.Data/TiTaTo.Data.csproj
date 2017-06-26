@@ -84,6 +84,7 @@
     <Content Include="game.html" />
     <Content Include="Global.asax" />
     <Content Include="index.html" />
+    <Content Include="library\scripts\authentication.js" />
     <Content Include="library\scripts\chessScript.js" />
     <Content Include="library\scripts\gameEngine.js" />
     <Content Include="library\scripts\oscillateScript.js" />
@@ -95,10 +96,17 @@
     <Content Include="library\scripts\vendor\jquery-3.1.1.min.js" />
     <Content Include="library\scripts\vendor\jquery-3.1.1.slim.js" />
     <Content Include="library\scripts\vendor\jquery-3.1.1.slim.min.js" />
+    <None Include="Scripts\jquery-3.1.1.intellisense.js" />
+    <Content Include="login.html" />
+    <Content Include="Scripts\jquery-3.1.1.js" />
+    <Content Include="Scripts\jquery-3.1.1.min.js" />
+    <Content Include="Scripts\jquery-3.1.1.slim.js" />
+    <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\MessageController.cs" />
     <Compile Include="DataAccess\SingletonDB.cs" />
     <Compile Include="Global.asax.cs">
@@ -113,6 +121,8 @@
     <Content Include="library\fonts\ShortStack-Regular.ttf" />
     <Content Include="library\scripts\vendor\jquery-3.1.1.slim.min.map" />
     <Content Include="library\scripts\vendor\jquery-3.1.1.min.map" />
+    <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.1.1.min.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

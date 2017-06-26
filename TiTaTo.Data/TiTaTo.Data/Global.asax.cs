@@ -17,5 +17,10 @@ namespace TiTaTo.Data
             SingletonDB s1 = SingletonDB.Instance;
             s1.Initialize();
         }
+
+        protected void Session_Start()
+        {
+            //Required to make sure session id does not change
+        }
     }
 }

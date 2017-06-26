@@ -17,6 +17,7 @@
     </div>
 
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script src="library/scripts/utils.js"></script>    
     <script>
         var uri = 'api/message';
 
@@ -30,6 +31,14 @@
                         $('<li>', { text: formatItem(item) }).appendTo($('#products'));
                     });
                 });
+
+            var postMessage = {
+                ID: 10,
+                Content: "lunch time",
+                Sender: "Derek",
+                Receiver: "Benedict"
+            }
+            APIPost("api/message", postMessage, null, null);
         });
 
         function formatItem(item) {

@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+	<meta charset="utf-8" />
+</head>
+<body>
+
+    <h1>Hello</h1>
+    <p>You are currently not logged in</p>
+    <p>Please enter a username to get started.</p>
+    <label for="username">Across the lands, I am known as:</label>
+    <input type="text" name="username" id="usernameInput"/>
+    <button id="submitUsername">Submit</button>
+
+    <script type="text/javascript" src="./library/scripts/vendor/jquery-3.1.1.js"></script>
+    <script type="text/javascript" src="./library/scripts/authentication.js"></script>
+    <script type="text/javascript" src="./library/scripts/utils.js"></script>
+    <script>
+        $(document).ready(function () {
+            initializeLogin();
+        });
+    </script>    
+
+</body>
+</html>

@@ -7,6 +7,11 @@ function findTileCenter(posX, posY) {
 
 
 
+
+
+
+
+
 function APIGet(path, options, successMethod, failureMethod) {
     $.get(path).then(
         function (data) {
@@ -21,15 +26,21 @@ function APIGet(path, options, successMethod, failureMethod) {
 function APIPost(path, options, successMethod, failureMethod) {
     var params = {
         url: path,
-        data: options
+        data: options,
+        dataType: "json",
+        type: "POST"
     }
-    $.post(params).then(
+    $.ajax(params).then(
         function (data) {
-            successMethod(data)
+            if (successMethod !== null && successMethod !== undefined)
+                successMethod(data);
         },
         function (xhr, status, error) {
-            failureMethod();
             console.log("There was an error completing the request.  Status: " + xhr.statusText);
+            console.log(xhr.responseJSON.ExceptionMessage);
+            if (failureMethod !== null && failureMethod !== undefined) {
+                failureMethod(xhr, status, error);
+            }                        
         });
 }
 
