@@ -1,5 +1,5 @@
-﻿function initializeLogin() {
-    if (sessionStorage.getItem("ID") !== null && sessionStorage.getItem("ID") !== undefined) {
+﻿function initializeLogin() {    
+    if (Cookie.Get("ID") !== null && Cookie.Get("ID") !== undefined && Cookie.Get("ID") !== "") {
         window.location.href = "/game.html";
     }
 
@@ -11,9 +11,9 @@
 }
 
 function loginSuccess(data) {
-    if (data.ID !== null && data.ID !== undefined) {
-        sessionStorage.setItem("ID", data.ID);
-        sessionStorage.setItem("Name", data.Name);
+    if (data.ID !== null && data.ID !== undefined) {        
+        Cookie.Set("ID", data.ID);
+        Cookie.Set("Name", data.Name);
 
         window.location.href = "/game.html";
     } else {

@@ -6,12 +6,21 @@ var canvasContext = canvas.getContext('2d');
 function setup() {
     console.log("initializing...");
 
+    var playerID = Cookie.Get("ID");
+    var playerName = Cookie.Get("Name");
+    $("#currentPlayer").append(`Currently playing as ${playerName} (${playerID})`);
+
     canvas.addEventListener('mousemove', function (evt) {
         mouseMoveEvent(evt);
     });
 
     canvas.addEventListener('mousedown', function (evt) {
         mouseClickedEvent(evt);
+    });
+
+    $("#btnLogout").click(function (e) {
+        Cookie.RemoveAll();
+        window.location.href = "/login.html";
     });
 }
 
