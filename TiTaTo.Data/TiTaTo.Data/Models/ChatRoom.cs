@@ -8,7 +8,11 @@ namespace TiTaTo.Data.Models
     public class ChatRoom
     {
         public Guid ID { get; set; }
-        public List<Guid> UserIDs { get; set; }
+
+        //TODO: I feel like this should be a list of GUID, so that we have a single source of truth.
+        //But at the same time, I also would like to have names present.
+        public List<User> Users { get; set; }
+
         public List<Message> Messages { get; set; }
     }
 }

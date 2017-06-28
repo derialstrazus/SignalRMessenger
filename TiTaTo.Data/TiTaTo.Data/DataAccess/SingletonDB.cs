@@ -36,6 +36,33 @@ namespace TiTaTo.Data.DataAccess
             //Messages.Add(new Message { ID = 2, Sender = "Benedict", Receiver = "Derek", Content = "Hello Back!" });
             //Messages.Add(new Message { ID = 3, Sender = "Derek", Receiver = "Benedict", Content = "Goodbye" });
             //Messages.Add(new Message { ID = 4, Sender = "Derek", Receiver = "Adrian", Content = "Hello" });
+
+            Users.Add(new User()
+            {
+                ID = Guid.NewGuid(),
+                Name = "Telemetry",
+                LastOnline = DateTime.Now
+            });
+
+            Users.Add(new User()
+            {
+                ID = Guid.NewGuid(),
+                Name = "Harmonize",
+                LastOnline = DateTime.Now
+            });
+
+            ChatRooms.Add(new ChatRoom() {
+                ID = Guid.NewGuid(),
+                Users = new List<User>() {
+                    Users[0],
+                    Users[1]
+                },
+                Messages = new List<Message>()
+                {
+                    new Message() { Content = "Hello", SenderID = Users[0].ID, TimeStamp = DateTime.Now},
+                    new Message() { Content = "Goodbye", SenderID = Users[1].ID, TimeStamp = DateTime.Now}                    
+                }
+            });
         }
     }
 }

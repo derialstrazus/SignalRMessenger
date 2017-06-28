@@ -11,12 +11,16 @@ namespace TiTaTo.Data.Models
         SingletonDB s1 = SingletonDB.Instance;
 
         public Guid SenderID { get; set; }
-
-        //TODO: Test if this works
-        public string SenderName {
-            get {
+        
+        public string SenderName
+        {
+            get
+            {
                 User user = s1.Users.FirstOrDefault(x => x.ID == SenderID);     //What happens if this returns null?
-                return user.Name;
+                if (user != null)
+                    return user.Name;
+                else
+                    return "";
             }
         }
         public string Content { get; set; }

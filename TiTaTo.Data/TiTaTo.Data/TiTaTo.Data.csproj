@@ -81,10 +81,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="chatroom.html" />
     <Content Include="game.html" />
     <Content Include="Global.asax" />
     <Content Include="index.html" />
     <Content Include="library\scripts\authentication.js" />
+    <Content Include="library\scripts\chatroom.js" />
     <Content Include="library\scripts\chessScript.js" />
     <Content Include="library\scripts\gameEngine.js" />
     <Content Include="library\scripts\oscillateScript.js" />

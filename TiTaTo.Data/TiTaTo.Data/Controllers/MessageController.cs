@@ -16,17 +16,26 @@ namespace TiTaTo.Data.Controllers
         [HttpGet, Route("api/chatroom")]
         public IHttpActionResult GetUserChatRooms()
         {
-            IEnumerable<string> stringID = Request.Headers.GetValues("UserID");
-            Guid userID = Guid.Parse(stringID.FirstOrDefault());        //TODO: isolate this
-            IEnumerable<ChatRoom> chatRooms = s1.ChatRooms.Where(x => x.UserIDs.Contains(userID));
-            if (chatRooms != null)
-            {
-                return Ok(chatRooms);
-            }
-            else
+            Guid userID = GetUserIDFromHeader();        //TODO: Isolate this
+            IEnumerable<ChatRoom> chatRooms = s1.ChatRooms.Where(x => x.Users.Any(y => y.ID == userID));
+            if (chatRooms == null)
             {
                 return NotFound();
-            }            
+            }
+
+            return Ok(chatRooms);
+        }
+
+        [HttpGet, Route("api/chatroom/all")]
+        public IHttpActionResult GetAllChatRooms()
+        {            
+            IEnumerable<ChatRoom> chatRooms = s1.ChatRooms;     //TODO: Reduce load to only ID and name
+            if (chatRooms == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(chatRooms);
         }
 
         [HttpGet, Route("api/chatroom/{chatRoomID}")]
@@ -46,14 +55,14 @@ namespace TiTaTo.Data.Controllers
         [HttpPost, Route("api/chatroom")]
         public IHttpActionResult CreateChatRoom()
         {
-            IEnumerable<string> stringID = Request.Headers.GetValues("UserID");
-            Guid userID = Guid.Parse(stringID.FirstOrDefault());
+            Guid userID = GetUserIDFromHeader();
+            User user = s1.Users.First(x => x.ID == userID);
             s1.ChatRooms.Add(new ChatRoom() {
                 ID = Guid.NewGuid(),
-                UserIDs = new List<Guid>(),
+                Users = new List<User>(),
                 Messages = new List<Message>()
             });
-            s1.ChatRooms.Last().UserIDs.Add(userID);
+            s1.ChatRooms.Last().Users.Add(user);
 
             return Ok(s1.ChatRooms.Last());
         }
@@ -62,17 +71,61 @@ namespace TiTaTo.Data.Controllers
         public IHttpActionResult JoinChatRoom(Guid chatRoomID)
         {
             ChatRoom chatRoom = s1.ChatRooms.FirstOrDefault(x => x.ID == chatRoomID);
-            IEnumerable<string> stringID = Request.Headers.GetValues("UserID");
-            Guid userID = Guid.Parse(stringID.FirstOrDefault());
+            Guid userID = GetUserIDFromHeader();
+            User user = s1.Users.First(x => x.ID == userID);
             if (chatRoom != null)
             {
-                chatRoom.UserIDs.Add(userID);
+                if(chatRoom.Users.All(x => x.ID != userID))
+                    chatRoom.Users.Add(user);
                 return Ok(chatRoom);
             }
             else
             {
                 return NotFound();
             }
+        }
+
+        ////This is not necessary.  Just use get chatroom
+        //[HttpGet, Route("api/chatroom/{chatRoomID}/recentmessages}")]
+        //public IHttpActionResult GetRecentMessages(Guid chatRoomID)
+        //{
+        //    Guid userID = GetUserIDFromHeader();
+        //    ChatRoom chatRoom = s1.ChatRooms.FirstOrDefault(x => x.ID == chatRoomID);
+
+        //    if (chatRoom == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return Ok(chatRoom.Messages.OrderByDescending(x => x.TimeStamp).Take(5));            
+        //}
+
+        [HttpPost, Route("api/chatroom/{chatRoomID}/messages")]
+        public IHttpActionResult CreateMessage(Guid chatRoomID, [FromBody]Message messageData)
+        {
+            Guid userID = GetUserIDFromHeader();
+            ChatRoom chatRoom = s1.ChatRooms.FirstOrDefault(x => x.ID == chatRoomID);
+
+            if (chatRoom == null)
+            {
+                return NotFound();      //TODO: Need a message that says chatroom not found
+            }
+
+            chatRoom.Messages.Add(new Message()
+            {
+                SenderID = userID,
+                Content = messageData.Content,
+                TimeStamp = DateTime.Now
+            });
+
+            return Ok();
+        }
+
+        private Guid GetUserIDFromHeader()
+        {
+            IEnumerable<string> stringID = Request.Headers.GetValues("UserID");
+            Guid userID = Guid.Parse(stringID.FirstOrDefault());
+            return userID;
         }
 
         //public IEnumerable<Message> GetAllMessages()

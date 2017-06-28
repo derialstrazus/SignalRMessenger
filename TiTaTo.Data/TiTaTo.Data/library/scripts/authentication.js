@@ -22,7 +22,7 @@ function loginSuccess(data) {
     
 }
 
-function loginFailure(xhr, status, error) {    
+function loginFailure(xhr, status, error) {
     var message = "Login failed.  Server says: " + xhr.responseJSON.ExceptionMessage;
     alert(message);
 }

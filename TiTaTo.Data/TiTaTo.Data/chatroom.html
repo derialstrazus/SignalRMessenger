@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<body>
+
+    <div id="profileInfo">
+        <p id="currentPlayer"></p>
+        <button id="btnLogout">Log Out</button>
+    </div>
+    <hr />
+
+    <div id="divChatRooms">
+
+    </div>
+    <hr />
+
+    <div id="divActiveChat">
+        <div id="divSendMessage">
+            <label for="message">Say:</label>
+            <input type="text" name="message" id="messageInput" />
+            <button id="btnSendMessage">Send</button>
+        </div>
+        <div id="divPastMessages"></div>
+    </div>
+
+
+
+
+
+
+    <script type="text/javascript" src="./library/scripts/vendor/jquery-3.1.1.js"></script>
+    <script type="text/javascript" src="./library/scripts/utils.js"></script>
+    <script type="text/javascript" src="./library/scripts/chatroom.js"></script>
+    <script>
+        $(document).ready(function () {
+            initializeChatRoom();
+        });
+    </script>
+
+</body>
+</html>
