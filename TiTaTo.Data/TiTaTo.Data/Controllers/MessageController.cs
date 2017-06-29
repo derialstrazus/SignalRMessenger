@@ -104,12 +104,15 @@ namespace TiTaTo.Data.Controllers
         public IHttpActionResult CreateMessage(Guid chatRoomID, [FromBody]Message messageData)
         {
             Guid userID = GetUserIDFromHeader();
-            ChatRoom chatRoom = s1.ChatRooms.FirstOrDefault(x => x.ID == chatRoomID);
-            //TODO: check if user is a member of this chatroom
+            ChatRoom chatRoom = s1.ChatRooms.FirstOrDefault(x => x.ID == chatRoomID);            
 
             if (chatRoom == null)
             {
                 return NotFound();      //TODO: Need a message that says chatroom not found
+            }
+
+            if (chatRoom.Users.All(x => x.ID != userID)) {
+                return NotFound();      //Message: user is not a member of this chatroom
             }
 
             chatRoom.Messages.Add(new Message()
@@ -124,9 +127,14 @@ namespace TiTaTo.Data.Controllers
 
         private Guid GetUserIDFromHeader()
         {
-            IEnumerable<string> stringID = Request.Headers.GetValues("UserID");
-            Guid userID = Guid.Parse(stringID.FirstOrDefault());
-            return userID;
+            try {
+                IEnumerable<string> stringID = Request.Headers.GetValues("UserID");
+                Guid userID = Guid.Parse(stringID.FirstOrDefault());
+                return userID;
+            }
+            catch (Exception ex) {
+                throw ex;
+            }
         }
 
         //public IEnumerable<Message> GetAllMessages()
