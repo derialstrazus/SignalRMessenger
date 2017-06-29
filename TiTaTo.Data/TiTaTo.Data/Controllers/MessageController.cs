@@ -16,7 +16,7 @@ namespace TiTaTo.Data.Controllers
         [HttpGet, Route("api/chatroom")]
         public IHttpActionResult GetUserChatRooms()
         {
-            Guid userID = GetUserIDFromHeader();        //TODO: Isolate this
+            Guid userID = GetUserIDFromHeader();        //TODO: Isolate this to an attribute
             IEnumerable<ChatRoom> chatRooms = s1.ChatRooms.Where(x => x.Users.Any(y => y.ID == userID));
             if (chatRooms == null)
             {
@@ -29,13 +29,13 @@ namespace TiTaTo.Data.Controllers
         [HttpGet, Route("api/chatroom/all")]
         public IHttpActionResult GetAllChatRooms()
         {            
-            IEnumerable<ChatRoom> chatRooms = s1.ChatRooms;     //TODO: Reduce load to only ID and name
+            IEnumerable<ChatRoom> chatRooms = s1.ChatRooms;
             if (chatRooms == null)
             {
                 return NotFound();
             }
 
-            return Ok(chatRooms);
+            return Ok(chatRooms.Select(x => new { ID = x.ID, RoomName = x.RoomName}));
         }
 
         [HttpGet, Route("api/chatroom/{chatRoomID}")]

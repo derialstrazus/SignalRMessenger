@@ -13,6 +13,14 @@ namespace TiTaTo.Data.Models
         //But at the same time, I also would like to have names present.
         public List<User> Users { get; set; }
 
+        public string RoomName
+        {
+            get {
+                List<string> test = Users.Select(x => x.Name).ToList();
+                return string.Join(", ", test);
+            }
+        }
+
         public List<Message> Messages { get; set; }
     }
 }

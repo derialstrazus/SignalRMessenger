@@ -47,7 +47,7 @@ namespace TiTaTo.Data.DataAccess
             Users.Add(new User()
             {
                 ID = Guid.NewGuid(),
-                Name = "Harmonize",
+                Name = "Harmony",
                 LastOnline = DateTime.Now
             });
 
@@ -59,8 +59,8 @@ namespace TiTaTo.Data.DataAccess
                 },
                 Messages = new List<Message>()
                 {
-                    new Message() { Content = "Hello", SenderID = Users[0].ID, TimeStamp = DateTime.Now},
-                    new Message() { Content = "Goodbye", SenderID = Users[1].ID, TimeStamp = DateTime.Now}                    
+                    new Message() { Content = "Hello!", SenderID = Users[1].ID, TimeStamp = DateTime.Now},
+                    new Message() { Content = "Greetings", SenderID = Users[0].ID, TimeStamp = DateTime.Now}
                 }
             });
         }

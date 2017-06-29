@@ -33,23 +33,17 @@ function GetAllChatRoomsFailure(xhr, status, error) {
 }
 
 function RenderChatRoomLink(chatRoom) {
-    var userString = "";
-    for (let j = 0; j < chatRoom.Users.length; j++) {
-        userString += chatRoom.Users[j].Name + ", ";
-    }
-    userString = userString.substring(0, userString.length - 2);
+    console.log(chatRoom.RoomName);
 
-    console.log(userString);
     var divChatRooms = $("#divChatRooms");
-    var chatRoomLink = $(`<a href="#">${userString}</a></br>`).appendTo(divChatRooms);
+    var chatRoomLink = $(`<a href="#">${chatRoom.RoomName}</a></br>`).appendTo(divChatRooms);
 
     chatRoomLink.click(function (e) {
         APIPut("api/chatroom/" + chatRoom.ID + "/join", null, GetChatRoomSuccess, GetChatRoomFailure);
     });
 }
 
-function GetChatRoomSuccess(data) {
-    //TODO: render messages
+function GetChatRoomSuccess(data) {    
     console.log(data);
     //window["data"] = data;
 
