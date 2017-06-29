@@ -55,7 +55,7 @@ function APIPost(path, options, successMethod, failureMethod) {
         });
 }
 
-function APIPut() {
+function APIPut(path, options, successMethod, failureMethod) {
     var userID = Cookie.Get("ID");
     var headers = { "UserID": userID };
     var params = {
@@ -79,7 +79,7 @@ function APIPut() {
         });
 }
 
-function APIDelete() {
+function APIDelete(path, options, successMethod, failureMethod) {
     var userID = Cookie.Get("ID");
     var headers = { "UserID": userID };
     var params = {

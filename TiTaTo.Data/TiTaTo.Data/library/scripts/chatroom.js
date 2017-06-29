@@ -41,17 +41,56 @@ function RenderChatRoomLink(chatRoom) {
 
     console.log(userString);
     var divChatRooms = $("#divChatRooms");
-    var chatRoomLink = $(`<a href="">${userString}</a></br>`).appendTo(divChatRooms);
+    var chatRoomLink = $(`<a href="#">${userString}</a></br>`).appendTo(divChatRooms);
 
-    chatRoomLink.onclick(function (e) {
-        APIGet("api/chatroom/" + chatRoom.ID, null, GetChatRoomSuccess, GetChatRoomFailure);
+    chatRoomLink.click(function (e) {
+        APIPut("api/chatroom/" + chatRoom.ID + "/join", null, GetChatRoomSuccess, GetChatRoomFailure);
     });
 }
 
-function GetChatRoomSuccess() {
+function GetChatRoomSuccess(data) {
     //TODO: render messages
+    console.log(data);
+    //window["data"] = data;
+
+    $("#tablePastMessages").empty();
+
+    for (let i = 0; i < data.Messages.length; i++) {
+        var message = data.Messages[i];
+        console.log(message.Content);
+        var date = new Date(message.TimeStamp);
+        var today = new Date();
+        var printDate = "";
+
+        if (date.toDateString() === today.toDateString()) {
+            printDate += date.toLocaleTimeString();
+        } else {
+            printDate += date.toDateString();
+        }        
+        $("#tablePastMessages").append(`<tr><td>${message.SenderName}</td><td>${message.Content}</td><td>${printDate}</td></tr>`);
+    }
+
+    //prepare send Message
+    var sendButton = $("#btnSendMessage");
+    sendButton.click(function (e) {
+        var messageToSend = $("#messageInput").val();
+        var sendThis = {
+            Content: messageToSend
+        }
+        
+        APIPost("api/chatroom/" + data.ID + "/messages", sendThis, sendMessageSuccess, sendMessageFailure);
+    });
 }
 
-function GetChatRoomFailure() {
+function sendMessageSuccess(data) {
+    GetChatRoomSuccess(data);
+}
 
+function sendMessageFailure(xhr, status, error) {
+
+}
+
+function GetChatRoomFailure(xhr, status, error) {
+    var message = "Failed to get chat room.  Server says: " + xhr.responseJSON.ExceptionMessage;
+    alert(message);
 }

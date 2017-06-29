@@ -105,6 +105,7 @@ namespace TiTaTo.Data.Controllers
         {
             Guid userID = GetUserIDFromHeader();
             ChatRoom chatRoom = s1.ChatRooms.FirstOrDefault(x => x.ID == chatRoomID);
+            //TODO: check if user is a member of this chatroom
 
             if (chatRoom == null)
             {
@@ -118,7 +119,7 @@ namespace TiTaTo.Data.Controllers
                 TimeStamp = DateTime.Now
             });
 
-            return Ok();
+            return Ok(chatRoom);
         }
 
         private Guid GetUserIDFromHeader()
