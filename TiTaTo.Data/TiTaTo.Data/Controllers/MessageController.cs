@@ -13,14 +13,18 @@ namespace TiTaTo.Data.Controllers
     {
         SingletonDB s1 = SingletonDB.Instance;
         
+        //TODO: ReTest all of these controllers
+
         [HttpGet, Route("api/chatroom")]
         public IHttpActionResult GetUserChatRooms()
         {
             Guid userID = GetUserIDFromHeader();        //TODO: Isolate this to an attribute
+
             IEnumerable<ChatRoom> chatRooms = s1.ChatRooms.Where(x => x.Users.Any(y => y.ID == userID));
             if (chatRooms == null)
             {
-                return NotFound();
+                //return NotFound();
+                return Content(HttpStatusCode.NotFound, "User does not belong to any open chat rooms.");
             }
 
             return Ok(chatRooms);
@@ -30,38 +34,28 @@ namespace TiTaTo.Data.Controllers
         public IHttpActionResult GetAllChatRooms()
         {            
             IEnumerable<ChatRoom> chatRooms = s1.ChatRooms;
-            if (chatRooms == null)
-            {
-                return NotFound();
-            }
-
             return Ok(chatRooms.Select(x => new { ID = x.ID, RoomName = x.RoomName}));
         }
 
         [HttpGet, Route("api/chatroom/{chatRoomID}")]
         public IHttpActionResult GetChatRoom(Guid chatRoomID)
         {
-            ChatRoom chatRoom = s1.ChatRooms.FirstOrDefault(x => x.ID == chatRoomID);
-            if (chatRoom != null)
-            {
-                return Ok(chatRoom);
-            }
-            else
-            {
-                return NotFound();
-            }
+            ChatRoom chatRoom = FindChatRoom(chatRoomID);            
+            return Ok(chatRoom);            
         }
 
         [HttpPost, Route("api/chatroom")]
         public IHttpActionResult CreateChatRoom()
         {
             Guid userID = GetUserIDFromHeader();
-            User user = s1.Users.First(x => x.ID == userID);
+            
             s1.ChatRooms.Add(new ChatRoom() {
                 ID = Guid.NewGuid(),
                 Users = new List<User>(),
                 Messages = new List<Message>()
             });
+
+            User user = s1.Users.First(x => x.ID == userID);
             s1.ChatRooms.Last().Users.Add(user);
 
             return Ok(s1.ChatRooms.Last());
@@ -70,19 +64,17 @@ namespace TiTaTo.Data.Controllers
         [HttpPut, Route("api/chatroom/{chatRoomID}/join")]
         public IHttpActionResult JoinChatRoom(Guid chatRoomID)
         {
-            ChatRoom chatRoom = s1.ChatRooms.FirstOrDefault(x => x.ID == chatRoomID);
             Guid userID = GetUserIDFromHeader();
-            User user = s1.Users.First(x => x.ID == userID);
-            if (chatRoom != null)
+            
+            ChatRoom chatRoom = FindChatRoom(chatRoomID);
+            
+            if(chatRoom.Users.All(x => x.ID != userID))
             {
-                if(chatRoom.Users.All(x => x.ID != userID))
-                    chatRoom.Users.Add(user);
-                return Ok(chatRoom);
+                User user = s1.Users.First(x => x.ID == userID);
+                chatRoom.Users.Add(user);
             }
-            else
-            {
-                return NotFound();
-            }
+                
+            return Ok(chatRoom);
         }
 
         ////This is not necessary.  Just use get chatroom
@@ -104,15 +96,15 @@ namespace TiTaTo.Data.Controllers
         public IHttpActionResult CreateMessage(Guid chatRoomID, [FromBody]Message messageData)
         {
             Guid userID = GetUserIDFromHeader();
-            ChatRoom chatRoom = s1.ChatRooms.FirstOrDefault(x => x.ID == chatRoomID);            
-
-            if (chatRoom == null)
-            {
-                return NotFound();      //TODO: Need a message that says chatroom not found
-            }
+            ChatRoom chatRoom = FindChatRoom(chatRoomID);
 
             if (chatRoom.Users.All(x => x.ID != userID)) {
-                return NotFound();      //Message: user is not a member of this chatroom
+                var response = new HttpResponseMessage(HttpStatusCode.NotFound)
+                {
+                    Content = new StringContent("User is not a member of this chatroom"),
+                    ReasonPhrase = "User is not a member of this chatroom"
+                };
+                throw new HttpResponseException(response);
             }
 
             chatRoom.Messages.Add(new Message()
@@ -125,16 +117,61 @@ namespace TiTaTo.Data.Controllers
             return Ok(chatRoom);
         }
 
+        //------------------------PRIVATES------------------
+
         private Guid GetUserIDFromHeader()
         {
             try {
                 IEnumerable<string> stringID = Request.Headers.GetValues("UserID");
-                Guid userID = Guid.Parse(stringID.FirstOrDefault());
+                //Guid userID = Guid.Parse(stringID.FirstOrDefault());
+                Guid userID;
+                bool successfulGuidParse = Guid.TryParse(stringID.FirstOrDefault(), out userID);
+
+                //return unauthorized if failed to parse GUID, whether due to GUID not provided, or wrong GUID format
+                if (!successfulGuidParse)
+                {
+                    var response = new HttpResponseMessage(HttpStatusCode.Unauthorized)
+                    {
+                        Content = new StringContent("User is not logged in"),
+                        ReasonPhrase = "User is not logged in"
+                    };
+                    throw new HttpResponseException(response);
+                }
+
+                //return unauthorized if userID does not exist on DB
+                if (s1.Users.All(u => u.ID != userID))
+                {
+                    var response = new HttpResponseMessage(HttpStatusCode.Unauthorized)
+                    {
+                        Content = new StringContent("User is not logged in"),
+                        ReasonPhrase = "Login GUID does not exist on database"
+                    };
+                    throw new HttpResponseException(response);
+                }
+
                 return userID;
-            }
-            catch (Exception ex) {
+            }            
+            catch (Exception ex)
+            {
                 throw ex;
             }
+        }
+
+        private ChatRoom FindChatRoom(Guid chatRoomID)
+        {
+            ChatRoom chatRoom = s1.ChatRooms.FirstOrDefault(x => x.ID == chatRoomID);
+
+            if (chatRoom == null)
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.NotFound)
+                {
+                    Content = new StringContent("Chat room could not be found for the given ID"),
+                    ReasonPhrase = "Chat room could not be found for the given ID"
+                };
+                throw new HttpResponseException(response);                
+            }
+
+            return chatRoom;
         }
 
         //public IEnumerable<Message> GetAllMessages()

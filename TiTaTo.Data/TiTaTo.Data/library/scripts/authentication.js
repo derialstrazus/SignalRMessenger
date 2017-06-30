@@ -1,6 +1,6 @@
 ﻿function initializeLogin() {
 
-    Cookie.RemoveAll();     //Need to have this here for now since all the users reset on each run.
+    //Cookie.RemoveAll();     //Need to have this here for now since all the users reset on each run.
     //TODO: On Utils.js, if returned user not found, treat it as not logged in, remove cookie, and redirect user to login page
 
     if (Cookie.Get("ID") !== null && Cookie.Get("ID") !== undefined && Cookie.Get("ID") !== "") {

@@ -6,9 +6,7 @@ function findTileCenter(posX, posY) {
 }
 
 //========================== API CALLS ==================================
-//TODO: Add GUID ID to header.  
-//On back, use header to verify that user is logged in.
-//If no GUID present, create alert and bounce user back to login page.
+//TODO: If 401 returned, redirect user to login page.
 
 function APIGet(path, options, successMethod, failureMethod) {
     var userID = Cookie.Get("ID");
@@ -105,6 +103,7 @@ function APIDelete(path, options, successMethod, failureMethod) {
 
 
 //========================== API CALLS ==================================
+//TODO: Understand how this works and write own version.
 var Cookie;
 (function (Cookie) {
     function Set(key, value, expireIn) {
