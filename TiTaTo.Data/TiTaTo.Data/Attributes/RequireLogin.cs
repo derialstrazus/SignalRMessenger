@@ -23,7 +23,7 @@ namespace TiTaTo.Data.Attributes
                 bool userExists = s1.Users.Any(u => u.ID == userID);
                 if (!userExists) {
                     throw new Exception("User is not found");
-                    //TODO: throw a 403 error.  On front, redirect user to login.
+                    //TODO: throw a 401 error.  On front, redirect user to login.
                 } else {
                     //TODO: save userID to a GlobalVaraible
                 }

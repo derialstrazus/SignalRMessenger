@@ -6,11 +6,9 @@ function findTileCenter(posX, posY) {
 }
 
 //========================== API CALLS ==================================
-//TODO: If 401 returned, redirect user to login page.
 
 function APIGet(path, options, successMethod, failureMethod) {
-    var userID = Cookie.Get("ID");
-    var headers = { "UserID": userID };
+    var headers = { "UserID": Cookie.Get("ID") };
     $.get({
         url: path,
         headers: headers,
@@ -20,7 +18,10 @@ function APIGet(path, options, successMethod, failureMethod) {
             if (successMethod !== null && successMethod !== undefined)
                 successMethod(data);
         },
-        function (xhr, status, error) {
+        function (xhr, status, error) {            
+            if (xhr.status == 401) {
+                CleanUpAndRedirectToLogin();
+            }
             console.log("There was an error completing the request.  Status: " + xhr.statusText);
             console.log(xhr.responseJSON.ExceptionMessage);
             if (failureMethod !== null && failureMethod !== undefined) {
@@ -29,9 +30,8 @@ function APIGet(path, options, successMethod, failureMethod) {
         });
 }
 
-function APIPost(path, options, successMethod, failureMethod) {
-    var userID = Cookie.Get("ID");
-    var headers = { "UserID": userID };
+function APIPost(path, options, successMethod, failureMethod) {    
+    var headers = { "UserID": Cookie.Get("ID") };
     var params = {
         url: path,
         headers: headers,
@@ -45,6 +45,9 @@ function APIPost(path, options, successMethod, failureMethod) {
                 successMethod(data);
         },
         function (xhr, status, error) {
+            if (xhr.status == 401) {
+                CleanUpAndRedirectToLogin();
+            }
             console.log("There was an error completing the request.  Status: " + xhr.statusText);
             console.log(xhr.responseJSON.ExceptionMessage);
             if (failureMethod !== null && failureMethod !== undefined) {
@@ -54,8 +57,7 @@ function APIPost(path, options, successMethod, failureMethod) {
 }
 
 function APIPut(path, options, successMethod, failureMethod) {
-    var userID = Cookie.Get("ID");
-    var headers = { "UserID": userID };
+    var headers = { "UserID": Cookie.Get("ID") };
     var params = {
         url: path,
         headers: headers,
@@ -69,6 +71,9 @@ function APIPut(path, options, successMethod, failureMethod) {
                 successMethod(data);
         },
         function (xhr, status, error) {
+            if (xhr.status == 401) {
+                CleanUpAndRedirectToLogin();
+            }
             console.log("There was an error completing the request.  Status: " + xhr.statusText);
             console.log(xhr.responseJSON.ExceptionMessage);
             if (failureMethod !== null && failureMethod !== undefined) {
@@ -78,8 +83,7 @@ function APIPut(path, options, successMethod, failureMethod) {
 }
 
 function APIDelete(path, options, successMethod, failureMethod) {
-    var userID = Cookie.Get("ID");
-    var headers = { "UserID": userID };
+    var headers = { "UserID": Cookie.Get("ID") };
     var params = {
         url: path,
         headers: headers,
@@ -93,12 +97,24 @@ function APIDelete(path, options, successMethod, failureMethod) {
                 successMethod(data);
         },
         function (xhr, status, error) {
+            if (xhr.status == 401) {
+                CleanUpAndRedirectToLogin();
+            }
             console.log("There was an error completing the request.  Status: " + xhr.statusText);
             console.log(xhr.responseJSON.ExceptionMessage);
             if (failureMethod !== null && failureMethod !== undefined) {
                 failureMethod(xhr, status, error);
             }
         });
+}
+
+function CleanUpAndRedirectToLogin() {
+    Cookie.Remove("ID");
+    Cookie.Remove("Name");
+    //TODO: Add redirect URL to query string
+    //TODO: login initialize needs to see redirect URL and send user to page after login
+    alert("Your user does not exist on the database.  Please login as a new user.");
+    window.location.href = "/login.html";
 }
 
 
@@ -131,7 +147,8 @@ var Cookie;
     Cookie.Get = Get;
     function Remove(key) {
         Set(key, '');
-        return AHIMA.Helpers.IsNullOrEmpty(Get(key));
+        var check = Get(key);
+        return (check === null || check === undefined || check === "");
     }
     Cookie.Remove = Remove;
     function RemoveAll() {
