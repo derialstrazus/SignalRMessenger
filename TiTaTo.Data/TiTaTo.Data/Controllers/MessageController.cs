@@ -14,6 +14,8 @@ namespace TiTaTo.Data.Controllers
     {
         SingletonDB s1 = SingletonDB.Instance;
 
+        //TODO: Switch to SignalR
+        //TODO: Once SignalR is ready, add audio notifications
         //TODO: ReTest all of these controllers
 
         [HttpGet, Route("api/chatroom")]
