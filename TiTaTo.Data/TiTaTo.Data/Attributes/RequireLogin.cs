@@ -11,35 +11,38 @@ using TiTaTo.Data.DataAccess;
 
 namespace TiTaTo.Data.Attributes
 {
-    public class RequireLogin: ActionFilterAttribute
+    public class RequireLogin : ActionFilterAttribute
     {
         SingletonDB s1 = SingletonDB.Instance;
 
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
-            try {
-                IEnumerable<string> stringID = actionContext.Request.Headers.GetValues("UserID");
-                Guid userID = Guid.Parse(stringID.FirstOrDefault());
-                bool userExists = s1.Users.Any(u => u.ID == userID);
-                if (!userExists) {
-                    throw new Exception("User is not found");
-                    //TODO: throw a 401 error.  On front, redirect user to login.
-                } else {
-                    //TODO: save userID to a GlobalVariable
-                }
-            }
-            catch (Exception ex) {
+
+            IEnumerable<string> stringID = actionContext.Request.Headers.GetValues("UserID");
+            Guid userID;
+            bool successfulGuidParse = Guid.TryParse(stringID.FirstOrDefault(), out userID);
+
+            //return unauthorized if failed to parse GUID, whether due to GUID not provided, or wrong GUID format
+            if (!successfulGuidParse)
+            {
                 var response = new HttpResponseMessage(HttpStatusCode.Unauthorized)
                 {
                     Content = new StringContent("User is not logged in"),
-                    ReasonPhrase = "Log-in GUID was not included in header"
+                    ReasonPhrase = "User is not logged in"
                 };
-
                 throw new HttpResponseException(response);
             }
-            
 
-            //base.OnActionExecuting(actionContext);
+            //return unauthorized if userID does not exist on DB
+            if (s1.Users.All(u => u.ID != userID))
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.Unauthorized)
+                {
+                    Content = new StringContent("User is not logged in"),
+                    ReasonPhrase = "Login GUID does not exist on database"
+                };
+                throw new HttpResponseException(response);
+            }
         }
     }
 }

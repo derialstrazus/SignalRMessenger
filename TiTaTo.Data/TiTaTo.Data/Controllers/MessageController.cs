@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using TiTaTo.Data.Models;
 using TiTaTo.Data.DataAccess;
+using TiTaTo.Data.Attributes;
 
 namespace TiTaTo.Data.Controllers
 {
@@ -30,7 +31,7 @@ namespace TiTaTo.Data.Controllers
             return Ok(chatRooms);
         }
 
-        [HttpGet, Route("api/chatroom/all")]
+        [HttpGet, Route("api/chatroom/all"), RequireLogin]
         public IHttpActionResult GetAllChatRooms()
         {
             IEnumerable<ChatRoom> chatRooms = s1.ChatRooms;

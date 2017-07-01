@@ -20,8 +20,14 @@ namespace TiTaTo.Data.Models
         }
 
         public List<Message> Messages { get; set; }
+        
+        public string RecentUsers {
+            get {
+                List<string> recentUserCollection = Messages.OrderByDescending(x => x.TimeStamp).Take(5).Select(x => x.SenderName).ToList();
+                return string.Join(", ", recentUserCollection);
+            }
+        }
 
-        //TODO: Add list of recent users, by getting all users within the last 5 mins.
-        //public List<string> RecentUsers { get; set; }
+        public bool IsPrivate { get; set; } = false;
     }
 }

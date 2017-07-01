@@ -13,6 +13,19 @@ function initializeChatRoom() {
         window.location.href = "/login.html";
     });
 
+    //prepare send Message
+    var sendButton = $("#btnSendMessage");
+    sendButton.unbind();
+    sendButton.click(function (e) {
+        var chatRoomID = $("#hiddenChatRoomID").val();
+        var messageToSend = $("#messageInput").val();
+        var sendThis = {
+            Content: messageToSend
+        }
+
+        APIPost("api/chatroom/" + chatRoomID + "/messages", sendThis, sendMessageSuccess, sendMessageFailure);
+    });
+
     GetAllChatRooms();
 }
 
@@ -48,6 +61,7 @@ function GetChatRoomSuccess(data) {
     //window["data"] = data;
 
     $("#tablePastMessages").empty();
+    $("#hiddenChatRoomID").val(data.ID);
 
     for (let i = 0; i < data.Messages.length; i++) {
         var message = data.Messages[i];
@@ -63,17 +77,6 @@ function GetChatRoomSuccess(data) {
         }        
         $("#tablePastMessages").append(`<tr><td>${message.SenderName}</td><td>${message.Content}</td><td>${printDate}</td></tr>`);
     }
-
-    //prepare send Message
-    var sendButton = $("#btnSendMessage");
-    sendButton.click(function (e) {
-        var messageToSend = $("#messageInput").val();
-        var sendThis = {
-            Content: messageToSend
-        }
-        
-        APIPost("api/chatroom/" + data.ID + "/messages", sendThis, sendMessageSuccess, sendMessageFailure);
-    });
 }
 
 function sendMessageSuccess(data) {
