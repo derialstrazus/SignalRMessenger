@@ -61,7 +61,8 @@ namespace TiTaTo.Data.DataAccess
                 {
                     new Message() { Content = "Hello!", SenderID = Users[1].ID, TimeStamp = DateTime.Now},
                     new Message() { Content = "Greetings", SenderID = Users[0].ID, TimeStamp = DateTime.Now}
-                }
+                },
+                RoomName = "General Chat"
             });
         }
     }

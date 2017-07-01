@@ -25,7 +25,7 @@ namespace TiTaTo.Data.Attributes
                     throw new Exception("User is not found");
                     //TODO: throw a 401 error.  On front, redirect user to login.
                 } else {
-                    //TODO: save userID to a GlobalVaraible
+                    //TODO: save userID to a GlobalVariable
                 }
             }
             catch (Exception ex) {

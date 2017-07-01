@@ -12,7 +12,7 @@ namespace TiTaTo.Data.Controllers
     public class MessageController : ApiController
     {
         SingletonDB s1 = SingletonDB.Instance;
-        
+
         //TODO: ReTest all of these controllers
 
         [HttpGet, Route("api/chatroom")]
@@ -32,24 +32,25 @@ namespace TiTaTo.Data.Controllers
 
         [HttpGet, Route("api/chatroom/all")]
         public IHttpActionResult GetAllChatRooms()
-        {            
+        {
             IEnumerable<ChatRoom> chatRooms = s1.ChatRooms;
-            return Ok(chatRooms.Select(x => new { ID = x.ID, RoomName = x.RoomName}));
+            return Ok(chatRooms.Select(x => new { ID = x.ID, RoomName = x.RoomName }));
         }
 
         [HttpGet, Route("api/chatroom/{chatRoomID}")]
         public IHttpActionResult GetChatRoom(Guid chatRoomID)
         {
-            ChatRoom chatRoom = FindChatRoom(chatRoomID);            
-            return Ok(chatRoom);            
+            ChatRoom chatRoom = FindChatRoom(chatRoomID);
+            return Ok(chatRoom);
         }
 
         [HttpPost, Route("api/chatroom")]
         public IHttpActionResult CreateChatRoom()
         {
             Guid userID = GetUserIDFromHeader();
-            
-            s1.ChatRooms.Add(new ChatRoom() {
+
+            s1.ChatRooms.Add(new ChatRoom()
+            {
                 ID = Guid.NewGuid(),
                 Users = new List<User>(),
                 Messages = new List<Message>()
@@ -65,15 +66,15 @@ namespace TiTaTo.Data.Controllers
         public IHttpActionResult JoinChatRoom(Guid chatRoomID)
         {
             Guid userID = GetUserIDFromHeader();
-            
+
             ChatRoom chatRoom = FindChatRoom(chatRoomID);
-            
-            if(chatRoom.Users.All(x => x.ID != userID))
+
+            if (chatRoom.Users.All(x => x.ID != userID))
             {
                 User user = s1.Users.First(x => x.ID == userID);
                 chatRoom.Users.Add(user);
             }
-                
+
             return Ok(chatRoom);
         }
 
@@ -98,7 +99,8 @@ namespace TiTaTo.Data.Controllers
             Guid userID = GetUserIDFromHeader();
             ChatRoom chatRoom = FindChatRoom(chatRoomID);
 
-            if (chatRoom.Users.All(x => x.ID != userID)) {
+            if (chatRoom.Users.All(x => x.ID != userID))
+            {
                 var response = new HttpResponseMessage(HttpStatusCode.NotFound)
                 {
                     Content = new StringContent("User is not a member of this chatroom"),
@@ -121,40 +123,34 @@ namespace TiTaTo.Data.Controllers
 
         private Guid GetUserIDFromHeader()
         {
-            try {
-                IEnumerable<string> stringID = Request.Headers.GetValues("UserID");
-                //Guid userID = Guid.Parse(stringID.FirstOrDefault());
-                Guid userID;
-                bool successfulGuidParse = Guid.TryParse(stringID.FirstOrDefault(), out userID);
+            IEnumerable<string> stringID = Request.Headers.GetValues("UserID");
+            //Guid userID = Guid.Parse(stringID.FirstOrDefault());
+            Guid userID;
+            bool successfulGuidParse = Guid.TryParse(stringID.FirstOrDefault(), out userID);
 
-                //return unauthorized if failed to parse GUID, whether due to GUID not provided, or wrong GUID format
-                if (!successfulGuidParse)
-                {
-                    var response = new HttpResponseMessage(HttpStatusCode.Unauthorized)
-                    {
-                        Content = new StringContent("User is not logged in"),
-                        ReasonPhrase = "User is not logged in"
-                    };
-                    throw new HttpResponseException(response);
-                }
-
-                //return unauthorized if userID does not exist on DB
-                if (s1.Users.All(u => u.ID != userID))
-                {
-                    var response = new HttpResponseMessage(HttpStatusCode.Unauthorized)
-                    {
-                        Content = new StringContent("User is not logged in"),
-                        ReasonPhrase = "Login GUID does not exist on database"
-                    };
-                    throw new HttpResponseException(response);
-                }
-
-                return userID;
-            }            
-            catch (Exception ex)
+            //return unauthorized if failed to parse GUID, whether due to GUID not provided, or wrong GUID format
+            if (!successfulGuidParse)
             {
-                throw ex;
+                var response = new HttpResponseMessage(HttpStatusCode.Unauthorized)
+                {
+                    Content = new StringContent("User is not logged in"),
+                    ReasonPhrase = "User is not logged in"
+                };
+                throw new HttpResponseException(response);
             }
+
+            //return unauthorized if userID does not exist on DB
+            if (s1.Users.All(u => u.ID != userID))
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.Unauthorized)
+                {
+                    Content = new StringContent("User is not logged in"),
+                    ReasonPhrase = "Login GUID does not exist on database"
+                };
+                throw new HttpResponseException(response);
+            }
+
+            return userID;
         }
 
         private ChatRoom FindChatRoom(Guid chatRoomID)
@@ -168,7 +164,7 @@ namespace TiTaTo.Data.Controllers
                     Content = new StringContent("Chat room could not be found for the given ID"),
                     ReasonPhrase = "Chat room could not be found for the given ID"
                 };
-                throw new HttpResponseException(response);                
+                throw new HttpResponseException(response);
             }
 
             return chatRoom;
