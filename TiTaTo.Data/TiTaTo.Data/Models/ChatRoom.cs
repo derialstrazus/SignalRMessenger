@@ -23,7 +23,10 @@ namespace TiTaTo.Data.Models
         
         public string RecentUsers {
             get {
-                List<string> recentUserCollection = Messages.OrderByDescending(x => x.TimeStamp).Take(5).Select(x => x.SenderName).ToList();
+                List<string> recentUserCollection = Messages.OrderByDescending(x => x.TimeStamp)
+                    .Where(x => x.TimeStamp > DateTime.Now.AddMinutes(-10))
+                    .Take(5)
+                    .Select(x => x.SenderName).ToList();
                 return string.Join(", ", recentUserCollection);
             }
         }

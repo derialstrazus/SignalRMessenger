@@ -1,10 +1,20 @@
-﻿var redirectHere = "/chatroom.html";
+﻿const redirectHere = "/chatroom.html";
+const announcementsArr = [
+    "Across the lands, I am known as:",
+    "They see me rollin', they screamin':",
+    "When I'm in the club the hotties call me:",
+    "...:",
+    "Please mail the check to:"
+];
 
-function initializeLogin() {    
-    
+function initializeLogin() {
     if (Cookie.Get("ID") !== null && Cookie.Get("ID") !== undefined && Cookie.Get("ID") !== "") {
         window.location.href = redirectHere;
     }
+
+    var announcement = announcementsArr[Math.floor(Math.random() * announcementsArr.length)];
+    $("#divLoginInput label").empty();
+    $("#divLoginInput label").append(announcement);
 
     $("#submitUsername").click(function (e) {
         var username = $("#usernameInput").val();
@@ -22,7 +32,6 @@ function loginSuccess(data) {
     } else {
         alert("No GUID returned");
     }
-    
 }
 
 function loginFailure(xhr, status, error) {
