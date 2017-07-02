@@ -124,10 +124,10 @@ namespace TiTaTo.Data.Controllers
 
         //------------------------PRIVATES------------------
 
+        //TODO: Isolate this
         private Guid GetUserIDFromHeader()
         {
-            IEnumerable<string> stringID = Request.Headers.GetValues("UserID");
-            //Guid userID = Guid.Parse(stringID.FirstOrDefault());
+            IEnumerable<string> stringID = Request.Headers.GetValues("UserID");            
             Guid userID;
             bool successfulGuidParse = Guid.TryParse(stringID.FirstOrDefault(), out userID);
 

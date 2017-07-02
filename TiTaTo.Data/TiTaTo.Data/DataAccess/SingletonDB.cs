@@ -34,7 +34,7 @@ namespace TiTaTo.Data.DataAccess
             Users.Add(new User()
             {
                 ID = Guid.NewGuid(),
-                Name = "Telemetry",
+                Name = "Server",
                 LastOnline = DateTime.Now
             });
 
@@ -54,7 +54,7 @@ namespace TiTaTo.Data.DataAccess
                 Messages = new List<Message>()
                 {
                     new Message() { Content = "Hello!", SenderID = Users[1].ID, TimeStamp = DateTime.Now},
-                    new Message() { Content = "Greetings", SenderID = Users[0].ID, TimeStamp = DateTime.Now}
+                    new Message() { Content = "Hello.  Welcome to the general chat room.", SenderID = Users[0].ID, TimeStamp = DateTime.Now}
                 },
                 RoomName = "General Chat"
             });

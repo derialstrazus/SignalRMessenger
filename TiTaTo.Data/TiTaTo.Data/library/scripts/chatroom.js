@@ -1,5 +1,8 @@
-﻿var playerID = Cookie.Get("ID");
+﻿const refreshIntervalInSeconds = 5;
+
+var playerID = Cookie.Get("ID");
 var playerName = Cookie.Get("Name");
+var activeChatRoom;
 
 function initializeChatRoom() {
     if (playerID == "") {
@@ -27,6 +30,13 @@ function initializeChatRoom() {
     });
 
     GetAllChatRooms();
+
+    setInterval(function () {
+        if (activeChatRoom !== null && activeChatRoom !== undefined) {
+            APIPut("api/chatroom/" + activeChatRoom + "/join", null, GetChatRoomSuccess, GetChatRoomFailure);
+        }
+    }, 1000 * refreshIntervalInSeconds);
+    //TODO: Create a new controller to return only most recent.  
 }
 
 function GetAllChatRooms() {
@@ -53,13 +63,15 @@ function RenderChatRoomLink(chatRoom) {
 
     chatRoomLink.click(function (e) {
         APIPut("api/chatroom/" + chatRoom.ID + "/join", null, GetChatRoomSuccess, GetChatRoomFailure);
-    });
+    });     //TODO: Separate join and enter.  Join if you are not a member.  Enter if you are a member.
+    //Or, just enter, and let the controller prompt you to join if you are not a member.
 }
 
-function GetChatRoomSuccess(data) {    
+function GetChatRoomSuccess(data) {
     console.log(data);
     //window["data"] = data;
 
+    activeChatRoom = data.ID;
     $("#tablePastMessages").empty();
     $("#hiddenChatRoomID").val(data.ID);
 
@@ -74,9 +86,9 @@ function GetChatRoomSuccess(data) {
             printDate += date.toLocaleTimeString();
         } else {
             printDate += date.toDateString();
-        }        
+        }
         $("#tablePastMessages").append(`<tr><td>${message.SenderName}</td><td>${message.Content}</td><td>${printDate}</td></tr>`);
-    }
+    }        
 }
 
 function sendMessageSuccess(data) {

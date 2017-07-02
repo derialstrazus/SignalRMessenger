@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Http;
+using TiTaTo.Data.Attributes;
 using TiTaTo.Data.DataAccess;
 using TiTaTo.Data.Models;
 
@@ -25,6 +26,12 @@ namespace TiTaTo.Data.Controllers
                 s1.Users.RemoveAll(x => x.Name == name);
                 return InternalServerError(ex);
             }
+        }
+
+        [HttpGet, Route("api/authentication"), RequireLogin]
+        public IHttpActionResult Check()
+        {
+            return Ok();
         }
     }
 }
