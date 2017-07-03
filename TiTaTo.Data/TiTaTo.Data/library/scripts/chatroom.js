@@ -3,13 +3,14 @@
 var playerID = Cookie.Get("ID");
 var playerName = Cookie.Get("Name");
 var activeChatRoom;
+var activeRoomMessages;
 
 function initializeChatRoom() {
     if (playerID == "") {
         window.location.href = "/login.html";
     }
 
-    $("#currentPlayer").append(`Currently logged in as ${playerName} (${playerID})`);
+    $("#currentPlayer").append(`Currently logged in as ${playerName} (${playerID.substring(0, 8)})`);
 
     $("#btnLogout").click(function (e) {
         Cookie.RemoveAll();
@@ -20,13 +21,15 @@ function initializeChatRoom() {
     var sendButton = $("#btnSendMessage");
     sendButton.unbind();
     sendButton.click(function (e) {
-        var chatRoomID = $("#hiddenChatRoomID").val();
-        var messageToSend = $("#messageInput").val();
-        var sendThis = {
-            Content: messageToSend
-        }
+        sendMessage();
+        return false;
+    });
 
-        APIPost("api/chatroom/" + chatRoomID + "/messages", sendThis, sendMessageSuccess, sendMessageFailure);
+    $('#messageInput').keydown(function (event) {
+        if (event.keyCode == 13) {
+            sendMessage();
+            return false;
+        }
     });
 
     GetAllChatRooms();
@@ -36,7 +39,7 @@ function initializeChatRoom() {
             APIPut("api/chatroom/" + activeChatRoom + "/join", null, GetChatRoomSuccess, GetChatRoomFailure);
         }
     }, 1000 * refreshIntervalInSeconds);
-    //TODO: Create a new controller to return only most recent.  
+    //TODO: Create a new controller to return only most recent.
 }
 
 function GetAllChatRooms() {
@@ -68,16 +71,19 @@ function RenderChatRoomLink(chatRoom) {
 }
 
 function GetChatRoomSuccess(data) {
-    console.log(data);
-    //window["data"] = data;
+    console.log(data);    
 
     activeChatRoom = data.ID;
+    if (activeRoomMessages != undefined && activeRoomMessages != null && activeRoomMessages.length == data.Messages.length) {
+        return;
+    }
+
+    activeRoomMessages = data.Messages;
     $("#tablePastMessages").empty();
     $("#hiddenChatRoomID").val(data.ID);
 
     for (let i = 0; i < data.Messages.length; i++) {
         var message = data.Messages[i];
-        console.log(message.Content);
         var date = new Date(message.TimeStamp);
         var today = new Date();
         var printDate = "";
@@ -87,19 +93,40 @@ function GetChatRoomSuccess(data) {
         } else {
             printDate += date.toDateString();
         }
-        $("#tablePastMessages").append(`<tr><td>${message.SenderName}</td><td>${message.Content}</td><td>${printDate}</td></tr>`);
-    }        
-}
+        $("#tablePastMessages").append(`<tr><td class="sendername">${message.SenderName}</td><td class="sentmessage">${message.Content}</td><td class="senderdate">${printDate}</td></tr>`);
+    }
 
-function sendMessageSuccess(data) {
-    GetChatRoomSuccess(data);
-}
-
-function sendMessageFailure(xhr, status, error) {
-
+    var chatDiv = document.getElementById("divPastMessages");
+    chatDiv.parentElement.scrollTop = chatDiv.scrollHeight;
+    
+    $(".chatinput").show();
+    $("#messageInput").focus();
 }
 
 function GetChatRoomFailure(xhr, status, error) {
     var message = "Failed to get chat room.  Server says: " + xhr.responseJSON.ExceptionMessage;
     alert(message);
+}
+
+function sendMessage() {
+    var chatRoomID = $("#hiddenChatRoomID").val();
+    var messageToSend = $("#messageInput").val();
+    if (messageToSend === "") {
+        return false;
+    }
+
+    var sendThis = {
+        Content: messageToSend
+    }
+    APIPost("api/chatroom/" + chatRoomID + "/messages", sendThis, SendMessageSuccess, SendMessageFailure);
+    $("#messageInput").val("");
+
+    function SendMessageSuccess(data) {
+        GetChatRoomSuccess(data);
+    }
+
+    function SendMessageFailure(xhr, status, error) {
+        var message = "Failed to send message.  Server says: " + xhr.responseJSON.ExceptionMessage;
+        alert(message);
+    }
 }

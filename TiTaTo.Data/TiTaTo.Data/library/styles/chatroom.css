@@ -1,0 +1,87 @@
+﻿table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 5px;    
+}
+
+.sendername {
+    width: 200px;
+    max-width: 200px;
+    overflow: hidden;
+}
+
+.senderdate {
+    width: 100px;
+    max-width: 100px;    
+}
+
+.sentmessage {
+    word-wrap: break-word;
+}
+
+table {
+    width: 100%;
+}
+
+
+
+
+body {    
+    margin: 0;
+}
+
+.row, .col {
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+}
+
+.content {
+    padding: 5px;
+}
+
+.row.profile  {
+    height: 30px;
+    border-bottom: 1px solid black;
+}
+
+.row.chatrooms {
+    top: 30px;
+    height: 100px;
+    border-bottom: 1px solid black;
+}
+
+.row.chat {
+    top: 130px;
+    bottom: 60px;
+    border-bottom: 1px solid black;
+}
+
+.row.chatinput {
+    height: 60px;
+    bottom: 0px;   
+    display: none; 
+}
+
+.row.chatinput textarea {
+    width: 80%;
+    resize: none;
+    height: 40px;
+}
+
+.row.chatinput button {
+    width: 15%;
+    resize: none;
+    position: absolute;
+    top: 5px;
+    height: 46px;
+    right: 0px;
+}
+
+.scroll-x {
+    overflow-x: auto;
+}
+
+.scroll-y {
+    overflow-y: auto;
+}

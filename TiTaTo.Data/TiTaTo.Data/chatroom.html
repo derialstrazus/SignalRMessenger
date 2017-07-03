@@ -3,49 +3,42 @@
 <head>
     <title></title>
     <meta charset="utf-8" />
-    <style>
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-            padding: 5px;
-        }
-
-        table {
-            width: 100%
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="./library/styles/chatroom.css" />
 </head>
 <body>
 
-    <div id="profileInfo">
-        <p id="currentPlayer"></p>
-        <button id="btnLogout">Log Out</button>
-    </div>
-    <hr />
-
-    <div id="divChatRooms">
-        <!--TODO: Make this div max 10 lines long and scrollable-->
-    </div>
-    <hr />
-
-    <div id="divActiveChat">
-        <div>
-            <input id="hiddenChatRoomID" type="text" hidden="hidden" />
+    <div class="row profile">
+        <div id="profileInfo" class="content">
+            <span id="currentPlayer"></span>
+            <button id="btnLogout">Log Out</button>
         </div>
-        <div id="divSendMessage">       <!--TODO: Push this input to the bottom of the page-->
-            <label for="message">Say:</label>
-            <input type="text" name="message" id="messageInput" />
-            <button id="btnSendMessage">Send</button>
+    </div>
+
+    <div class="row chatrooms">
+        <div id="divChatRooms" class="content">            
         </div>
-        <br />
-        <div id="divPastMessages">      <!--TODO: Make this div stretch to bot of page, and scrollable-->
+    </div>
+
+    <div class="row chat scroll-y">
+        <div id="divPastMessages" class="content">            
             <table id="tablePastMessages"></table>
         </div>
     </div>
 
+    <div class="row chatinput">
+        <div id="divSendMessage" class="content">
+            <div>
+                <input id="hiddenChatRoomID" type="text" hidden="hidden" />
+            </div>
+            <div>                
+                <textarea type="text" name="message" id="messageInput" required="required"></textarea>
+                <button id="btnSendMessage">Send</button>
+            </div>
+        </div>
+    </div>
 
-
-
+    <!--TODO: Show who's online on a slide-in sidebar-->
+    <!--TODO: Show all chatrooms that you are a member of.  Do a query every 10s to update chatroom unread msgs.-->
 
 
     <script type="text/javascript" src="./library/scripts/vendor/jquery-3.1.1.js"></script>
@@ -56,6 +49,5 @@
             initializeChatRoom();
         });
     </script>
-
 </body>
 </html>

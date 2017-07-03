@@ -92,6 +92,7 @@
     <Content Include="library\scripts\oscillateScript.js" />
     <Content Include="library\scripts\ticScript.js" />
     <Content Include="library\scripts\utils.js" />
+    <Content Include="library\styles\chatroom.css" />
     <Content Include="library\styles\game.css" />
     <None Include="library\scripts\vendor\jquery-3.1.1.intellisense.js" />
     <Content Include="library\scripts\vendor\jquery-3.1.1.js" />
