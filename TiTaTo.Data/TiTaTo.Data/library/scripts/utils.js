@@ -117,8 +117,17 @@ function CleanUpAndRedirectToLogin() {
     window.location.href = "/login.html";
 }
 
+function GenericAPISuccess(data) {
+    console.log(JSON.stringify(data, "", 2));
+}
 
-//========================== API CALLS ==================================
+function GenericAPIFail(xhr, status, error) {
+    var message = "API call failed.  Server says: " + xhr.responseJSON.ExceptionMessage;
+    alert(message);
+}
+
+
+//========================== COOKIES ==================================
 //TODO: Understand how this works and write own version.
 var Cookie;
 (function (Cookie) {

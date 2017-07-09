@@ -9,18 +9,23 @@ const announcementsArr = [
 
 function initializeLogin() {
     if (Cookie.Get("ID") !== null && Cookie.Get("ID") !== undefined && Cookie.Get("ID") !== "") {
-        window.location.href = redirectHere;
+        APIGet("api/authentication", null, isLogin, null);
     }
 
     var announcement = announcementsArr[Math.floor(Math.random() * announcementsArr.length)];
-    $("#divLoginInput label").empty();
-    $("#divLoginInput label").append(announcement);
+    $("#formLoginInput label").empty();
+    $("#formLoginInput label").append(announcement);
 
-    $("#submitUsername").click(function (e) {
+    $("#formLoginInput").submit(function (e) {
         var username = $("#usernameInput").val();
         var passThis = {'': username}
         APIPost("api/authentication", passThis, loginSuccess, loginFailure);
+        //event.preventDefault();
     });
+}
+
+function isLogin() {
+    window.location.href = redirectHere;
 }
 
 function loginSuccess(data) {
