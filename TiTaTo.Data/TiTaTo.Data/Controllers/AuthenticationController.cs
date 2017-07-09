@@ -29,7 +29,7 @@ namespace TiTaTo.Data.Controllers
         }
 
         [HttpGet, Route("api/authentication"), RequireLogin]
-        public IHttpActionResult Check()
+        public IHttpActionResult GetAuthentication()
         {
             return Ok();
         }
