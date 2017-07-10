@@ -9,7 +9,7 @@ namespace TiTaTo.Data.Models
     {
         public Guid ID { get; set; }
 
-        public List<User> Users { get; set; }
+        public List<User> Users { get; set; }   //TODO: This needs to be by reference to s1, instead of saved by value
 
         private string _RoomName;
 
@@ -31,6 +31,8 @@ namespace TiTaTo.Data.Models
             }
         }
 
-        public bool IsPrivate { get; set; } = false;
+        public bool IsPublic { get; set; } = false;
+
+        public DateTime LastUpdated { get; set; } = DateTime.Now;
     }
 }

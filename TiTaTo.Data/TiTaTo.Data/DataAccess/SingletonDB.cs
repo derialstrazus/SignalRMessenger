@@ -41,7 +41,7 @@ namespace TiTaTo.Data.DataAccess
             Users.Add(new User()
             {
                 ID = Guid.NewGuid(),
-                Name = "Harmony",
+                Name = "Derek",
                 LastOnline = DateTime.Now
             });
 
@@ -52,11 +52,38 @@ namespace TiTaTo.Data.DataAccess
                     Users[1]
                 },
                 Messages = new List<Message>()
-                {
+                {                    
+                    new Message() { Content = "Hello.  Welcome to the general chat room.", SenderID = Users[0].ID, TimeStamp = DateTime.Now},
                     new Message() { Content = "Hello!", SenderID = Users[1].ID, TimeStamp = DateTime.Now},
-                    new Message() { Content = "Hello.  Welcome to the general chat room.", SenderID = Users[0].ID, TimeStamp = DateTime.Now}
                 },
-                RoomName = "General Chat"
+                RoomName = "General Chat",
+                IsPublic = true
+            });
+
+            ChatRooms.Add(new ChatRoom()
+            {
+                ID = Guid.NewGuid(),
+                Users = new List<User>() {
+                    Users[0]
+                },
+                Messages = new List<Message>()
+                {
+                    new Message() { Content = "Hello.  Welcome to the server announcements room.", SenderID = Users[0].ID, TimeStamp = DateTime.Now},
+                    new Message() { Content = "If anything new happens, I'll let you know!", SenderID = Users[0].ID, TimeStamp = DateTime.Now},
+                },
+                RoomName = "Server Announcements",
+                IsPublic = true
+            });
+
+            ChatRooms.Add(new ChatRoom()
+            {
+                ID = Guid.NewGuid(),
+                Users = new List<User>() {
+                    Users[0]
+                },
+                Messages = new List<Message>(),
+                RoomName = "Empty Room",
+                IsPublic = true
             });
         }
     }

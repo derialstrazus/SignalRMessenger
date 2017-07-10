@@ -26,6 +26,7 @@ table {
 
 
 
+
 body {    
     margin: 0;
 }
@@ -45,14 +46,20 @@ body {
     border-bottom: 1px solid black;
 }
 
-.row.chatrooms {
+.row.activeusers {
     top: 30px;
     height: 100px;
     border-bottom: 1px solid black;
 }
 
-.row.chat {
+.row.chatrooms {
     top: 130px;
+    height: 100px;
+    border-bottom: 1px solid black;
+}
+
+.row.chat {
+    top: 230px;
     bottom: 60px;
     border-bottom: 1px solid black;
 }

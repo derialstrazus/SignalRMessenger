@@ -3,7 +3,7 @@
 var playerID = Cookie.Get("ID");
 var playerName = Cookie.Get("Name");
 var activeChatRoom;
-var activeRoomMessages;
+var roomLastUpdated;
 
 function initializeChatRoom() {
     if (playerID == "") {
@@ -30,9 +30,10 @@ function initializeChatRoom() {
             sendMessage();
             return false;
         }
-    });
+    });     //TODO: Remove this after changing to from entry
 
-    GetAllChatRooms();
+    GetActiveUsers();
+    GetUserChatRooms();
 
     setInterval(function () {
         if (activeChatRoom !== null && activeChatRoom !== undefined) {
@@ -42,18 +43,51 @@ function initializeChatRoom() {
     //TODO: Create a new controller to return only most recent.
 }
 
-function GetAllChatRooms() {
-    APIGet("api/chatroom/all", null, GetAllChatRoomsSuccess, GetAllChatRoomsFailure);
+
+
+
+
+
+
+function GetActiveUsers() {
+    APIGet("api/chatroom/users", null, GetActiveUsersSuccess, GetActiveUsersFailure);
 }
 
-function GetAllChatRoomsSuccess(data) {
+function GetActiveUsersSuccess(data) {
+    var appendThis = "";
+    for (let i = 0; i < data.length; i++) {
+        var userData = data[i];
+        appendThis += userData.Name + ", ";
+    }
+    appendThis = appendThis.substring(0, appendThis.length - 2);
+    $("#divActiveUsers").empty();
+    $("#divActiveUsers").append(appendThis);
+}
+
+function GetActiveUsersFailure(xhr, status, error) {
+    var message = "Failed to get users.  Server says: " + xhr.responseJSON.ExceptionMessage;
+    alert(message);
+}
+
+
+
+
+
+
+
+function GetUserChatRooms() {
+    APIGet("api/chatroom", null, GetUserChatRoomsSuccess, GetUserChatRoomsFailure);
+}
+
+function GetUserChatRoomsSuccess(data) {
+    $("#divChatRooms").empty();
     for (let i = 0; i < data.length; i++) {
         var chatRoom = data[i];
         RenderChatRoomLink(chatRoom);
     }
 }
 
-function GetAllChatRoomsFailure(xhr, status, error) {
+function GetUserChatRoomsFailure(xhr, status, error) {
     var message = "Failed to get chat rooms.  Server says: " + xhr.responseJSON.ExceptionMessage;
     alert(message);
 }
@@ -62,11 +96,17 @@ function RenderChatRoomLink(chatRoom) {
     console.log(chatRoom.RoomName);
 
     var divChatRooms = $("#divChatRooms");
-    var chatRoomLink = $(`<a href="#">${chatRoom.RoomName}</a></br>`).appendTo(divChatRooms);
+    var chatRoomLink = $("<a href='#'>" + chatRoom.RoomName + "</a> ").appendTo(divChatRooms);
 
     chatRoomLink.click(function (e) {
-        APIPut("api/chatroom/" + chatRoom.ID + "/join", null, GetChatRoomSuccess, GetChatRoomFailure);
-    });     //TODO: Separate join and enter.  Join if you are not a member.  Enter if you are a member.
+        EnterChatRoom(chatRoom.ID)
+    });     
+}
+
+function EnterChatRoom(roomID) {
+    roomLastUpdated = null;
+    APIPut("api/chatroom/" + roomID + "/join", null, GetChatRoomSuccess, GetChatRoomFailure);
+    //TODO: Separate join and enter.  Join if you are not a member.  Enter if you are a member.
     //Or, just enter, and let the controller prompt you to join if you are not a member.
 }
 
@@ -74,11 +114,13 @@ function GetChatRoomSuccess(data) {
     console.log(data);    
 
     activeChatRoom = data.ID;
-    if (activeRoomMessages != undefined && activeRoomMessages != null && activeRoomMessages.length == data.Messages.length) {
+    if (roomLastUpdated != undefined
+        && roomLastUpdated != null
+        && roomLastUpdated === data.LastUpdated) {
         return;
     }
 
-    activeRoomMessages = data.Messages;
+    roomLastUpdated = data.LastUpdated;
     $("#tablePastMessages").empty();
     $("#hiddenChatRoomID").val(data.ID);
 
@@ -107,6 +149,11 @@ function GetChatRoomFailure(xhr, status, error) {
     var message = "Failed to get chat room.  Server says: " + xhr.responseJSON.ExceptionMessage;
     alert(message);
 }
+
+
+
+
+
 
 function sendMessage() {
     var chatRoomID = $("#hiddenChatRoomID").val();

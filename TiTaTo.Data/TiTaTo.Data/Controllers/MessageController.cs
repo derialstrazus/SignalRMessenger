@@ -21,9 +21,9 @@ namespace TiTaTo.Data.Controllers
         [HttpGet, Route("api/chatroom")]
         public IHttpActionResult GetUserChatRooms()
         {
-            Guid userID = GetUserIDFromHeader();        //TODO: Isolate this to an attribute
+            Guid userID = GetUserFromHeader().ID;        //TODO: Isolate this to an attribute
 
-            IEnumerable<ChatRoom> chatRooms = s1.ChatRooms.Where(x => x.Users.Any(y => y.ID == userID));
+            IEnumerable<ChatRoom> chatRooms = s1.ChatRooms.Where(x => x.Users.Any(y => y.ID == userID) || x.IsPublic);
             if (chatRooms == null)
             {
                 //return NotFound();
@@ -40,6 +40,14 @@ namespace TiTaTo.Data.Controllers
             return Ok(chatRooms.Select(x => new { ID = x.ID, RoomName = x.RoomName }));
         }
 
+        [HttpGet, Route("api/chatroom/users"), RequireLogin]
+        public IHttpActionResult GetActiveUsers()
+        {
+            IEnumerable<User> users = s1.Users;
+            //IEnumerable<User> users = s1.Users.Where(u => u.LastOnline > DateTime.Now.AddHours(-0.5));    //TODO: Switch to this once LastOnline is implemented
+            return Ok(users);
+        }
+
         [HttpGet, Route("api/chatroom/{chatRoomID}")]
         public IHttpActionResult GetChatRoom(Guid chatRoomID)
         {
@@ -50,7 +58,7 @@ namespace TiTaTo.Data.Controllers
         [HttpPost, Route("api/chatroom")]
         public IHttpActionResult CreateChatRoom()
         {
-            Guid userID = GetUserIDFromHeader();
+            Guid userID = GetUserFromHeader().ID;
 
             s1.ChatRooms.Add(new ChatRoom()
             {
@@ -65,10 +73,29 @@ namespace TiTaTo.Data.Controllers
             return Ok(s1.ChatRooms.Last());
         }
 
+        [HttpPut, Route("api/chatroom/{chatRoomID}/invite/{guestID}")]
+        public IHttpActionResult InviteToChatRoom(Guid chatRoomID, Guid guestID)
+        {
+            Guid userID = GetUserFromHeader().ID;
+
+            ChatRoom chatRoom = FindChatRoom(chatRoomID);
+            User guestUser = FindUser(guestID);
+
+            if (chatRoom.Users.All(x => x.ID != guestID))
+            {
+                User user = s1.Users.First(x => x.ID == guestID);
+                chatRoom.Users.Add(user);
+                chatRoom.LastUpdated = DateTime.Now;
+            }
+
+            return Ok(chatRoom);
+        }
+
+        //TODO: Fix this to only allow join public
         [HttpPut, Route("api/chatroom/{chatRoomID}/join")]
         public IHttpActionResult JoinChatRoom(Guid chatRoomID)
         {
-            Guid userID = GetUserIDFromHeader();
+            Guid userID = GetUserFromHeader().ID;
 
             ChatRoom chatRoom = FindChatRoom(chatRoomID);
 
@@ -76,6 +103,7 @@ namespace TiTaTo.Data.Controllers
             {
                 User user = s1.Users.First(x => x.ID == userID);
                 chatRoom.Users.Add(user);
+                chatRoom.LastUpdated = DateTime.Now;
             }
 
             return Ok(chatRoom);
@@ -99,7 +127,7 @@ namespace TiTaTo.Data.Controllers
         [HttpPost, Route("api/chatroom/{chatRoomID}/messages")]
         public IHttpActionResult CreateMessage(Guid chatRoomID, [FromBody]Message messageData)
         {
-            Guid userID = GetUserIDFromHeader();
+            Guid userID = GetUserFromHeader().ID;
             ChatRoom chatRoom = FindChatRoom(chatRoomID);
 
             if (chatRoom.Users.All(x => x.ID != userID))
@@ -119,13 +147,15 @@ namespace TiTaTo.Data.Controllers
                 TimeStamp = DateTime.Now
             });
 
+            chatRoom.LastUpdated = DateTime.Now;
+
             return Ok(chatRoom);
         }
 
         //------------------------PRIVATES------------------
 
         //TODO: Isolate this
-        private Guid GetUserIDFromHeader()
+        private User GetUserFromHeader()
         {
             IEnumerable<string> stringID = Request.Headers.GetValues("UserID");            
             Guid userID;
@@ -142,8 +172,10 @@ namespace TiTaTo.Data.Controllers
                 throw new HttpResponseException(response);
             }
 
+            var user = s1.Users.FirstOrDefault(u => u.ID == userID);
+
             //return unauthorized if userID does not exist on DB
-            if (s1.Users.All(u => u.ID != userID))
+            if (user == null)
             {
                 var response = new HttpResponseMessage(HttpStatusCode.Unauthorized)
                 {
@@ -151,9 +183,9 @@ namespace TiTaTo.Data.Controllers
                     ReasonPhrase = "Login GUID does not exist on database"
                 };
                 throw new HttpResponseException(response);
-            }
+            }            
 
-            return userID;
+            return user;
         }
 
         private ChatRoom FindChatRoom(Guid chatRoomID)
@@ -171,6 +203,23 @@ namespace TiTaTo.Data.Controllers
             }
 
             return chatRoom;
+        }
+
+        private User FindUser(Guid userID)
+        {
+            User user = s1.Users.FirstOrDefault(u => u.ID == userID);
+
+            if (user == null)
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.NotFound)
+                {
+                    Content = new StringContent("User could not be found for the given ID"),
+                    ReasonPhrase = "User could not be found for the given ID"
+                };
+                throw new HttpResponseException(response);
+            }
+
+            return user;
         }
 
         //public IEnumerable<Message> GetAllMessages()
