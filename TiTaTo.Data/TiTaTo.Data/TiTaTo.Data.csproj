@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="chatroom.html" />
+    <Content Include="chatroom2.html" />
     <Content Include="game.html" />
     <Content Include="Global.asax" />
     <Content Include="index.html" />
@@ -93,6 +94,7 @@
     <Content Include="library\scripts\ticScript.js" />
     <Content Include="library\scripts\utils.js" />
     <Content Include="library\styles\chatroom.css" />
+    <Content Include="library\styles\chatroom2.css" />
     <Content Include="library\styles\game.css" />
     <None Include="library\scripts\vendor\jquery-3.1.1.intellisense.js" />
     <Content Include="library\scripts\vendor\jquery-3.1.1.js" />
