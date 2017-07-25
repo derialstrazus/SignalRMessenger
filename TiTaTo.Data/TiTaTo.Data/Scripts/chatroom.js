@@ -94,7 +94,8 @@ function RenderChatRoomLink(chatRoom) {
     console.log(chatRoom.RoomName);
 
     var divChatRooms = $("#divChatRooms");
-    var chatRoomLink = $("<a href='#'>" + chatRoom.RoomName + "</a> ").appendTo(divChatRooms);
+    var divChatRoom = $(`<div id=chatroomlink${chatRoom.ID}></div>`).appendTo(divChatRooms);
+    var chatRoomLink = $("<a href='#'>" + chatRoom.RoomName + "</a> ").appendTo(divChatRoom);
 
     chatRoomLink.click(function (e) {
         EnterChatRoom(chatRoom.ID)

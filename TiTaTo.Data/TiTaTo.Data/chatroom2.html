@@ -3,7 +3,7 @@
 <head>
     <title></title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" type="text/css" href="./library/styles/chatroom2.css" />
+    <link href="Styles/chatroom2.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -55,10 +55,10 @@
     <!--TODO: Show who's online on a slide-in sidebar-->
     <!--TODO: Show all chatrooms that you are a member of.  Do a query every 10s to update chatroom unread msgs.-->
 
+    <script src="Scripts/External/jquery-3.1.1.js"></script>
+    <script src="Scripts/utils.js"></script>
+    <script src="Scripts/chatroom.js"></script>
 
-    <script type="text/javascript" src="./library/scripts/vendor/jquery-3.1.1.js"></script>
-    <script type="text/javascript" src="./library/scripts/utils.js"></script>
-    <script type="text/javascript" src="./library/scripts/chatroom.js"></script>
     <script>
         $(document).ready(function () {
             initializeChatRoom();

@@ -43,11 +43,39 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.2.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.2.2\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -83,30 +111,31 @@
   <ItemGroup>
     <Content Include="chatroom.html" />
     <Content Include="chatroom2.html" />
+    <Content Include="announcement.html" />
     <Content Include="game.html" />
     <Content Include="Global.asax" />
     <Content Include="index.html" />
-    <Content Include="library\scripts\authentication.js" />
-    <Content Include="library\scripts\chatroom.js" />
-    <Content Include="library\scripts\chessScript.js" />
-    <Content Include="library\scripts\gameEngine.js" />
-    <Content Include="library\scripts\oscillateScript.js" />
-    <Content Include="library\scripts\ticScript.js" />
-    <Content Include="library\scripts\utils.js" />
-    <Content Include="library\styles\chatroom.css" />
-    <Content Include="library\styles\chatroom2.css" />
-    <Content Include="library\styles\game.css" />
-    <None Include="library\scripts\vendor\jquery-3.1.1.intellisense.js" />
-    <Content Include="library\scripts\vendor\jquery-3.1.1.js" />
-    <Content Include="library\scripts\vendor\jquery-3.1.1.min.js" />
-    <Content Include="library\scripts\vendor\jquery-3.1.1.slim.js" />
-    <Content Include="library\scripts\vendor\jquery-3.1.1.slim.min.js" />
-    <None Include="Scripts\jquery-3.1.1.intellisense.js" />
+    <Content Include="Scripts\authentication.js" />
+    <Content Include="Scripts\chatroom.js" />
+    <Content Include="Scripts\announcement.js" />
+    <Content Include="Scripts\chessScript.js" />
+    <Content Include="Scripts\gameEngine.js" />
+    <Content Include="Scripts\External\jquery.signalR-2.2.2.js" />
+    <Content Include="Scripts\External\jquery.signalR-2.2.2.min.js" />
+    <Content Include="Scripts\oscillateScript.js" />
+    <Content Include="Scripts\ticScript.js" />
+    <Content Include="Scripts\utils.js" />
+    <Content Include="Styles\chatroom.css" />
+    <Content Include="Styles\chatroom2.css" />
+    <Content Include="Styles\game.css" />
+    <None Include="Scripts\External\jquery-3.1.1.intellisense.js" />
+    <Content Include="Scripts\External\jquery-3.1.1.js" />
+    <Content Include="Scripts\External\jquery-3.1.1.min.js" />
+    <Content Include="Scripts\External\jquery-3.1.1.slim.js" />
+    <Content Include="Scripts\External\jquery-3.1.1.slim.min.js" />
     <Content Include="login.html" />
-    <Content Include="Scripts\jquery-3.1.1.js" />
-    <Content Include="Scripts\jquery-3.1.1.min.js" />
-    <Content Include="Scripts\jquery-3.1.1.slim.js" />
-    <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
+    <Content Include="Scripts\External\jquery.signalR-2.1.2.js" />
+    <Content Include="Scripts\External\jquery.signalR-2.1.2.min.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -120,19 +149,19 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Hubs\ChatHub.cs" />
     <Compile Include="Models\ChatRoom.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\TicGame.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
     <Content Include="library\fonts\ShortStack-Regular.ttf" />
-    <Content Include="library\scripts\vendor\jquery-3.1.1.slim.min.map" />
-    <Content Include="library\scripts\vendor\jquery-3.1.1.min.map" />
-    <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
-    <Content Include="Scripts\jquery-3.1.1.min.map" />
+    <Content Include="Scripts\External\jquery-3.1.1.slim.min.map" />
+    <Content Include="Scripts\External\jquery-3.1.1.min.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
