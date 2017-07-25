@@ -20,7 +20,7 @@ function initializeLogin() {
         var username = $("#usernameInput").val();
         var passThis = {'': username}
         APIPost("api/authentication", passThis, loginSuccess, loginFailure);
-        //event.preventDefault();
+        return false;
     });
 }
 
