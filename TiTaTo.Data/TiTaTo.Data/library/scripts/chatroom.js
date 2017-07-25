@@ -17,20 +17,18 @@ function initializeChatRoom() {
         window.location.href = "/login.html";
     });
 
-    //prepare send Message
-    var sendButton = $("#btnSendMessage");
-    sendButton.unbind();
-    sendButton.click(function (e) {
-        sendMessage();
-        return false;
-    });
+   //prepare send Message
+    $("#formMessageInput").submit(function (e) {
+       sendMessage();
+       return false;
+    });    
 
     $('#messageInput').keydown(function (event) {
         if (event.keyCode == 13) {
-            sendMessage();
-            return false;
+           $("#formMessageInput").submit();
+           return false;
         }
-    });     //TODO: Remove this after changing to from entry
+    });
 
     GetActiveUsers();
     GetUserChatRooms();
