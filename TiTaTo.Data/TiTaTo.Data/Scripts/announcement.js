@@ -8,11 +8,11 @@ function initalizeAnnouncement() {
 
     var chatHub = $.connection.chatHub;
     $.connection.hub.logging = true;
-    $.connection.hub.start();
+    $.connection.hub.start();  
 
-    chatHub.client.newMessage = function (message) {
+    chatHub.client.broadcastMessage = function (name, message) {
         console.log(message);
-        $("#divMessages").append("<p>" + message + "</p>");
+        $("#divMessages").append("<p>" + name + " says " + message + "</p>");
     };
 
     $("#formMessage").submit(function (e) {
