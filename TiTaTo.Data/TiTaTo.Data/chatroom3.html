@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <link href="Styles/chatroom2.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="row profile">
+        <div id="profileInfo" class="content">
+            <span id="currentPlayer"></span>
+            <button id="btnLogout">Log Out</button>
+        </div>
+    </div>
+
+    <div class="col leftcol">
+        <div class="row chatrooms">
+            <b>Chat Rooms</b>
+            <div id="divChatRooms" class="content">
+            </div>
+        </div>
+        <div class="row activeusers">
+            <b>Online Users</b>
+            <div id="divActiveUsers" class="content">
+            </div>
+            <button id="btnNewChat">New Chat Room</button>  <!--TODO: create pop up that has dropdown with who to create a new convo with-->
+        </div>
+    </div>
+
+
+    <div class="col rightcol">
+        <div class="row chat scroll-y">
+            <div id="divPastMessages" class="content">
+                <table id="tablePastMessages"></table>
+            </div>
+
+            <!--TEMP-->
+            <form id="formMessage">
+                <label>Say something:</label>
+                <input type="text" />
+                <button type="submit">Send!</button>
+            </form>
+            <!--END TEMP-->
+
+        </div>
+
+        <div class="row chatinput">
+            <form id="formMessageInput" class="content">
+                <div>
+                    <input id="hiddenChatRoomID" type="text" hidden="hidden" />
+                </div>
+                <div id="formMessageInput">
+                    <textarea type="text" name="message" id="messageInput" required="required"></textarea>
+                    <button id="btnSendMessage">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+    <!--TODO: Show who's online on a slide-in sidebar-->
+    <!--TODO: Show all chatrooms that you are a member of.  Do a query every 10s to update chatroom unread msgs.-->
+
+    <script src="Scripts/External/jquery-1.10.2.js"></script>
+    <script src="Scripts/External/jquery.signalR-2.2.2.js"></script>
+    <script src="signalR/hubs"></script>
+    <script src="Scripts/utils.js"></script>
+    <script src="Scripts/chatroomSigR.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            initializeChatRoom();
+        });
+    </script>
+</body>
+</html>

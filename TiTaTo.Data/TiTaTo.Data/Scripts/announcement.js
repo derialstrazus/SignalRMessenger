@@ -30,4 +30,19 @@ function initalizeAnnouncement() {
         return false;
     });
 
+    $("#formMessageOnly").submit(function (e) {
+        var name = Cookie.Get("Name");
+        if (name === null || name === undefined || name === "") {
+            name = "John Doe";
+        }
+
+        var message = $("#formMessageOnly input").val();
+
+        console.log(name);
+        console.log(message);
+        chatHub.server.sendOnlyMessage(message);
+
+        return false;
+    });
+
 }
