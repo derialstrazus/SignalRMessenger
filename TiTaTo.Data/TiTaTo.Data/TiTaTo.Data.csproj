@@ -119,9 +119,6 @@
     <Content Include="Scripts\chatroom.js" />
     <Content Include="Scripts\announcement.js" />
     <Content Include="Scripts\chessScript.js" />
-    <None Include="Scripts\External\jquery-1.10.2.intellisense.js" />
-    <Content Include="Scripts\External\jquery-1.10.2.js" />
-    <Content Include="Scripts\External\jquery-1.10.2.min.js" />
     <Content Include="Scripts\gameEngine.js" />
     <Content Include="Scripts\External\jquery.signalR-2.2.2.js" />
     <Content Include="Scripts\External\jquery.signalR-2.2.2.min.js" />
@@ -131,13 +128,14 @@
     <Content Include="Styles\chatroom.css" />
     <Content Include="Styles\chatroom2.css" />
     <Content Include="Styles\game.css" />
-    <Content Include="Scripts\External\jquery-1.10.2.min.map" />
     <None Include="Scripts\External\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\External\jquery-3.1.1.js" />
     <Content Include="Scripts\External\jquery-3.1.1.min.js" />
     <Content Include="Scripts\External\jquery-3.1.1.slim.js" />
     <Content Include="Scripts\External\jquery-3.1.1.slim.min.js" />
     <Content Include="login.html" />
+    <Content Include="Scripts\External\jquery.signalR-2.1.2.js" />
+    <Content Include="Scripts\External\jquery.signalR-2.1.2.min.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

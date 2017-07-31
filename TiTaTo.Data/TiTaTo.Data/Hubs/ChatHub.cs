@@ -6,11 +6,11 @@ using Microsoft.AspNet.SignalR;
 
 namespace TiTaTo.Data.Hubs
 {
-   public class ChatHub : Hub
-   {
-      public void Send(string name, string message)
-      {
-         Clients.All.broadcastMessage(name, message);
-      }
-   }
+    public class ChatHub : Hub
+    {
+        public void Send(string name, string message)
+        {
+            Clients.All.newMessage(name + " says " + message);
+        }
+    }
 }
