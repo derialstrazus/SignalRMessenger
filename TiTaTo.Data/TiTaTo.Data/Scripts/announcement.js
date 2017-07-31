@@ -10,7 +10,7 @@ function initalizeAnnouncement() {
     $.connection.hub.logging = true;
     $.connection.hub.start();
 
-    chatHub.client.newMessage = function (message) {
+    chatHub.client.broadcastMessage = function (message) {
         console.log(message);
         $("#divMessages").append("<p>" + message + "</p>");
     };
