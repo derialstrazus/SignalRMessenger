@@ -20,16 +20,18 @@ namespace TiTaTo.Data.Models
         }
 
         public List<Message> Messages { get; set; }
-        
-        public string RecentUsers {
-            get {
-                List<string> recentUserCollection = Messages.OrderByDescending(x => x.TimeStamp)
-                    .Where(x => x.TimeStamp > DateTime.Now.AddMinutes(-10))
-                    .Take(5)
-                    .Select(x => x.SenderName).ToList();
-                return string.Join(", ", recentUserCollection);
-            }
-        }
+
+        //public string RecentUsers {
+        //    get {
+        //        List<string> recentUserCollection = Messages.OrderByDescending(x => x.TimeStamp)
+        //            .Where(x => x.TimeStamp > DateTime.Now.AddMinutes(-10))
+        //            .Take(5)
+        //            .Select(x => x.SenderName).ToList();
+        //        return string.Join(", ", recentUserCollection);
+        //    }
+        //}
+
+        public List<User> ActiveUsers { get; set; }
 
         public bool IsPublic { get; set; } = false;
 

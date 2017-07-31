@@ -15,5 +15,7 @@ namespace TiTaTo.Data.Models
         public DateTime LastOnline { get; set; }
 
         public string ConnectionID { get; set; }
+
+        public List<ChatRoom> ActiveIn { get; set; }
     }
 }

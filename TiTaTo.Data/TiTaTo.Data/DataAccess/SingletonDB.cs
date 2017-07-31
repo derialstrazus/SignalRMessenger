@@ -52,12 +52,13 @@ namespace TiTaTo.Data.DataAccess
                     Users[1]
                 },
                 Messages = new List<Message>()
-                {                    
+                {
                     new Message() { Content = "Hello.  Welcome to the general chat room.", SenderID = Users[0].ID, TimeStamp = DateTime.Now},
                     new Message() { Content = "Hello!", SenderID = Users[1].ID, TimeStamp = DateTime.Now},
                 },
                 RoomName = "General Chat",
-                IsPublic = true
+                IsPublic = true,
+                ActiveUsers = new List<User>()
             });
 
             ChatRooms.Add(new ChatRoom()
@@ -72,7 +73,8 @@ namespace TiTaTo.Data.DataAccess
                     new Message() { Content = "If anything new happens, I'll let you know!", SenderID = Users[0].ID, TimeStamp = DateTime.Now},
                 },
                 RoomName = "Server Announcements",
-                IsPublic = true
+                IsPublic = true,
+                ActiveUsers = new List<User>()
             });
 
             ChatRooms.Add(new ChatRoom()
@@ -83,7 +85,8 @@ namespace TiTaTo.Data.DataAccess
                 },
                 Messages = new List<Message>(),
                 RoomName = "Empty Room",
-                IsPublic = true
+                IsPublic = true,
+                ActiveUsers = new List<User>()
             });
         }
     }

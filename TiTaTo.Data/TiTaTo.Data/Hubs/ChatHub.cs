@@ -64,10 +64,85 @@ namespace TiTaTo.Data.Hubs
             //notify all users that are invited to this room
         }
 
-        public void SendMessage(string message, string userID, string destinationChatRoom)
+        public void EnterRoom(string roomIDString)
+        {
+            //Get the room GUID
+            Guid roomID;
+            bool parseSuccess = Guid.TryParse(roomIDString, out roomID);
+            if (!parseSuccess) {
+                throw new HubException("Improper GUID passed");
+            }
+
+            //Get the room
+            ChatRoom chatRoom = s1.ChatRooms.FirstOrDefault(x => x.ID == roomID);
+            if (chatRoom == null) {
+                throw new HubException("Chat room does not exist");
+            }
+
+            //Get the user
+            var userConnectionString = Context.ConnectionId;
+            var user = s1.Users.FirstOrDefault(x => x.ConnectionID == userConnectionString);
+            if (user == null) {
+                throw new HubException("User does not exist");
+            }
+
+            //If user not a member of this room, add him to the room
+            //TODO: Figure out security for this
+            if (chatRoom.Users.All(x => x.ID != user.ID)) {
+                chatRoom.Users.Add(user);
+                chatRoom.LastUpdated = DateTime.Now;
+            }
+            //var asActiveUser = chatRoom.ActiveUsers.FirstOrDefault(x => x.ID != user.ID);
+            //if (asActiveUser == null) {
+            //    chatRoom.ActiveUsers.Add(user);                
+            //} else {
+            //    asActiveUser = user;
+            //}
+
+            Clients.Caller.RoomEntered(chatRoom);
+        }
+
+        public void SendMessage(string message, string roomIDString)
         {
             //add message to db
             //notify all users who are receivers
+
+            //Get the room GUID
+            Guid roomID;
+            bool parseSuccess = Guid.TryParse(roomIDString, out roomID);
+            if (!parseSuccess) {
+                throw new HubException("Improper GUID passed");
+            }
+
+            //Get the room
+            ChatRoom chatRoom = s1.ChatRooms.FirstOrDefault(x => x.ID == roomID);
+            if (chatRoom == null) {
+                throw new HubException("Chat room does not exist");
+            }
+
+            //Get the user
+            var userConnectionString = Context.ConnectionId;
+            var user = s1.Users.FirstOrDefault(x => x.ConnectionID == userConnectionString);
+            if (user == null) {
+                throw new HubException("User does not exist");
+            }
+            if (chatRoom.Users.All(x => x.ID != user.ID)) {
+                throw new HubException("User is not allowed to talk in this chatroom");
+            }
+
+            //Add message to db
+            chatRoom.Messages.Add(new Message()
+            {
+                SenderID = user.ID,
+                Content = message,
+                TimeStamp = DateTime.Now
+            });
+            var thisMessage = chatRoom.Messages.Last();
+
+            //Notify all members
+            foreach (User member in chatRoom.ActiveUsers) {
+                Clients.Client(member.ConnectionID).newMessage(thisMessage);
+            }
         }
 
 
