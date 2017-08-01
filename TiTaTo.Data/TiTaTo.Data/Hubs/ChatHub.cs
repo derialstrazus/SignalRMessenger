@@ -57,10 +57,37 @@ namespace TiTaTo.Data.Hubs
             Clients.Others.SomeoneJoined(user);
         }
 
-        public void CreateRoom()
+        public void CreateRoom(string invitedUserIDString)
         {
             //add room to db
             //notify all users that are invited to this room
+
+            var invitedUser = GetUserByID(invitedUserIDString);
+            var currentUser = GetUserByConnectionID(Context.ConnectionId);
+
+            var existingChatRoom = s1.ChatRooms
+                .Where(x => x.Users.Count == 2)
+                .FirstOrDefault(x => x.Users.Any(y => y.ID == invitedUser.ID) && x.Users.Any(y => y.ID == currentUser.ID));
+
+            if (existingChatRoom != null) {
+                Clients.Caller.RoomExists(existingChatRoom.ID);
+            }
+            else {
+                var newRoomGuid = Guid.NewGuid();
+                s1.ChatRooms.Add(new ChatRoom()
+                {
+                    ID = newRoomGuid,
+                    Users = new List<User>()
+                    {
+                        currentUser,
+                        invitedUser
+                    },
+                    RoomName = currentUser.Name + ", " + invitedUser.Name,
+                    IsPublic = false
+                });
+
+                Clients.Caller.RoomCreated(newRoomGuid);
+            }
         }
 
         public void EnterRoom(string roomIDString)
@@ -112,18 +139,18 @@ namespace TiTaTo.Data.Hubs
             }
 
             //Add message to db
-            chatRoom.Messages.Add(new Message()
+            var newMessage = new Message()
             {
                 SenderID = user.ID,
                 Content = message,
                 TimeStamp = DateTime.Now
-            });
-            var thisMessage = chatRoom.Messages.Last();     //This is not concurrent.  Might cause problems if multiple people communicate at the same time
+            };
+            chatRoom.Messages.Add(newMessage);
 
             //Notify all members
             var listeners = s1.ConnectionStrings.Where(x => x.Value.ChatRoomID == chatRoom.ID).Select(x => x.Key);
             foreach (var listener in listeners) {
-                Clients.Client(listener).NewMessage(thisMessage);
+                Clients.Client(listener).NewMessage(newMessage);
             }
         }
 
@@ -134,12 +161,10 @@ namespace TiTaTo.Data.Hubs
 
         public override Task OnDisconnected(bool stopCalled)
         {
+            //Notify all members
             ConnectionInfo cxInfo = s1.ConnectionStrings[Context.ConnectionId];
             User user = GetUserByID(cxInfo.UserID);
 
-            s1.ConnectionStrings.Remove(Context.ConnectionId);
-
-            //Notify all members
             if (cxInfo.ChatRoomID == Guid.Empty) {
                 var thisMessage = new Message()
                 {
@@ -152,7 +177,9 @@ namespace TiTaTo.Data.Hubs
                     Clients.Client(listener).NewMessage(thisMessage);
                 }
             }
-            
+
+            //Clean up connection
+            s1.ConnectionStrings.Remove(Context.ConnectionId);
 
             return base.OnDisconnected(stopCalled);
         }

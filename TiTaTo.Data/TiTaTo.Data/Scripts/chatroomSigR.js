@@ -49,10 +49,23 @@ var RenderUsers = function RenderUsers(data) {
     var appendThis = "";
     for (let i = 0; i < data.length; i++) {
         var userData = data[i];
-        appendThis += userData.Name + ", ";
+        //appendThis += userData.Name + ", ";
+        RenderUserLink(userData);
     }
-    appendThis = appendThis.substring(0, appendThis.length - 2);    
-    $("#divActiveUsers").append(appendThis);
+    //appendThis = appendThis.substring(0, appendThis.length - 2);    
+    //$("#divActiveUsers").append(appendThis);
+}
+
+var RenderUserLink = function RenderUserLink(user) {
+    var divActiveUsers = $("#divActiveUsers");
+
+    var divUser = $(`<div id=userlink${user.ID}></div>`).appendTo(divActiveUsers);
+    var userLink = $(`<a href="#">${user.Name}</a>`).appendTo(divUser);
+
+    userLink.click(function (e) {        
+        chatHub.server.createRoom(user.ID)
+            .fail(SignalRFailure);
+    });
 }
 
 
