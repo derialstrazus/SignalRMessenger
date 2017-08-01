@@ -70,23 +70,25 @@ namespace TiTaTo.Data.Hubs
                 .FirstOrDefault(x => x.Users.Any(y => y.ID == invitedUser.ID) && x.Users.Any(y => y.ID == currentUser.ID));
 
             if (existingChatRoom != null) {
-                Clients.Caller.RoomExists(existingChatRoom.ID);
+                Clients.Caller.RoomExists(existingChatRoom);
             }
-            else {
-                var newRoomGuid = Guid.NewGuid();
-                s1.ChatRooms.Add(new ChatRoom()
+            else {                
+                var newChatRoom = new ChatRoom()
                 {
-                    ID = newRoomGuid,
+                    ID = Guid.NewGuid(),
                     Users = new List<User>()
                     {
                         currentUser,
                         invitedUser
                     },
+                    Messages = new List<Message>(),
                     RoomName = currentUser.Name + ", " + invitedUser.Name,
                     IsPublic = false
-                });
+                };
 
-                Clients.Caller.RoomCreated(newRoomGuid);
+                s1.ChatRooms.Add(newChatRoom);
+
+                Clients.Caller.RoomEntered(newChatRoom);
             }
         }
 

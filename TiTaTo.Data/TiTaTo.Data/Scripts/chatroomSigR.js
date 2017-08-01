@@ -95,15 +95,25 @@ function EnterChatRoom(roomID) {
         .fail(SignalRFailure);
 }
 
-chatHub.client.roomEntered = function RoomEntered(data) {
+chatHub.client.roomEntered = function RoomEnetered(data) {
+    enterTheRoom(data);
+}
+
+chatHub.client.roomExists = function RoomExists(data) {
+    alert("You are already in a conversation with this person");
+    enterTheRoom(data);
+}
+
+var enterTheRoom = function enterTheRoom(data) {
     console.log("Entered " + data.RoomName);
-    
+    //TODO: Check if this room exists on room list.  If not, add it.
+
     $("#tablePastMessages").empty();
     $("#hiddenChatRoomID").val(data.ID);
 
     for (let i = 0; i < data.Messages.length; i++) {
         var message = data.Messages[i];
-        var date = new Date(message.TimeStamp);        
+        var date = new Date(message.TimeStamp);
         var printDate = "";
 
         if (date.toDateString() === today.toDateString()) {
