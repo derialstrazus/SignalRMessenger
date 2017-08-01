@@ -9,7 +9,7 @@ namespace TiTaTo.Data.Models
     {
         public Guid ID { get; set; }
 
-        public List<User> Users { get; set; }   //TODO: This needs to be by reference to s1, instead of saved by value
+        public List<User> Users { get; set; }   //TODO: This needs to be by reference to s1, instead of saved by value.  Change to List<string>
 
         private string _RoomName;
 
@@ -29,9 +29,7 @@ namespace TiTaTo.Data.Models
         //            .Select(x => x.SenderName).ToList();
         //        return string.Join(", ", recentUserCollection);
         //    }
-        //}
-
-        public List<User> ActiveUsers { get; set; }
+        //}        
 
         public bool IsPublic { get; set; } = false;
 

@@ -25,11 +25,19 @@ namespace TiTaTo.Data.DataAccess
         public List<User> Users { get; set; }
         public List<ChatRoom> ChatRooms { get; set; }
 
+        public Dictionary<string, ConnectionStringInfo> ConnectionStrings { get; set; }
+
+
+
+
+
+
 
         public void Initialize()
         {            
             Users = new List<User>();
             ChatRooms = new List<ChatRoom>();
+            ConnectionStrings = new Dictionary<string, ConnectionStringInfo>();
             
             Users.Add(new User()
             {
@@ -57,8 +65,7 @@ namespace TiTaTo.Data.DataAccess
                     new Message() { Content = "Hello!", SenderID = Users[1].ID, TimeStamp = DateTime.Now},
                 },
                 RoomName = "General Chat",
-                IsPublic = true,
-                ActiveUsers = new List<User>()
+                IsPublic = true
             });
 
             ChatRooms.Add(new ChatRoom()
@@ -73,8 +80,7 @@ namespace TiTaTo.Data.DataAccess
                     new Message() { Content = "If anything new happens, I'll let you know!", SenderID = Users[0].ID, TimeStamp = DateTime.Now},
                 },
                 RoomName = "Server Announcements",
-                IsPublic = true,
-                ActiveUsers = new List<User>()
+                IsPublic = true
             });
 
             ChatRooms.Add(new ChatRoom()
@@ -85,8 +91,7 @@ namespace TiTaTo.Data.DataAccess
                 },
                 Messages = new List<Message>(),
                 RoomName = "Empty Room",
-                IsPublic = true,
-                ActiveUsers = new List<User>()
+                IsPublic = true
             });
         }
     }

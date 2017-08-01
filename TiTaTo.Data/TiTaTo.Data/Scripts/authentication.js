@@ -1,4 +1,4 @@
-﻿const redirectHere = "/chatroom.html";
+﻿const redirectHere = "/chatroomSigR.html";
 const announcementsArr = [
     "Across the lands, I am known as:",
     "They see me rollin', they screamin':",
