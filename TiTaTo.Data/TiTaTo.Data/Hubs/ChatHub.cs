@@ -25,6 +25,13 @@ namespace TiTaTo.Data.Hubs
 
         SingletonDB s1 = SingletonDB.Instance;
 
+        public Guid ServerUserID
+        {
+            get {
+                return s1.Users.First(x => x.Name == "Server").ID;
+            }
+        }
+
         public void Join(string userIDString)
         {
             //Find the user
@@ -32,14 +39,15 @@ namespace TiTaTo.Data.Hubs
 
             //Establish user
             user.LastOnline = DateTime.MaxValue;
-            s1.ConnectionStrings.Add(Context.ConnectionId, new ConnectionStringInfo() { UserID = user.ID });
+            s1.ConnectionStrings.Add(Context.ConnectionId, new ConnectionInfo() { UserID = user.ID });
 
             //Help client render
             var chatRooms = s1.ChatRooms
                 .Where(x => x.Users.Any(y => y.ID == user.ID) || x.IsPublic)
                 .Select(c => new { ID = c.ID, RoomName = c.RoomName });
             IEnumerable<User> users = s1.Users;
-            Clients.Caller.Initialize(new {
+            Clients.Caller.Initialize(new
+            {
                 chatRooms = chatRooms.ToList(),
                 users = users.ToList()
             });
@@ -47,7 +55,7 @@ namespace TiTaTo.Data.Hubs
             //Notify all other users
             //TODO: Implement this on front
             Clients.Others.SomeoneJoined(user);
-        }        
+        }
 
         public void CreateRoom()
         {
@@ -56,28 +64,48 @@ namespace TiTaTo.Data.Hubs
         }
 
         public void EnterRoom(string roomIDString)
-        {            
+        {
             //Get the room
             ChatRoom chatRoom = GetChatRoom(roomIDString);
 
             //Get the user
             User user = GetUserByConnectionID(Context.ConnectionId);
 
-            //If user not a member of this room, add him to the room
-            //TODO: Figure out security for this
+            //Check if user is a member of this room.  
+            //If not, check if room is public.
+            //If yes, add him to the room, otherwise kick him out.
             if (chatRoom.Users.All(x => x.ID != user.ID)) {
-                chatRoom.Users.Add(user);
-                chatRoom.LastUpdated = DateTime.Now;
+                if (!chatRoom.IsPublic) {
+                    throw new HubException("User is not allowed in this room");
+                }
+                else {
+                    chatRoom.Users.Add(user);
+                    chatRoom.LastUpdated = DateTime.Now;
+                }
             }
 
+            //establish location of this connection id
             s1.ConnectionStrings[Context.ConnectionId].ChatRoomID = chatRoom.ID;
 
+            //let client know room is entered
             Clients.Caller.RoomEntered(chatRoom);
+
+            //Notify all members
+            var thisMessage = new Message()
+            {
+                Content = user.Name + " has joined the chat room",
+                SenderID = ServerUserID,
+                TimeStamp = DateTime.Now
+            };
+            var listeners = s1.ConnectionStrings.Where(x => x.Value.ChatRoomID == chatRoom.ID).Select(x => x.Key);
+            foreach (var listener in listeners) {
+                Clients.Client(listener).NewMessage(thisMessage);
+            }
         }
 
         public void SendMessage(string message, string roomIDString)
-        {            
-            ChatRoom chatRoom = GetChatRoom(roomIDString);            
+        {
+            ChatRoom chatRoom = GetChatRoom(roomIDString);
             User user = GetUserByConnectionID(Context.ConnectionId);
             if (chatRoom.Users.All(x => x.ID != user.ID)) {
                 throw new HubException("User is not allowed to talk in this chatroom");
@@ -94,8 +122,7 @@ namespace TiTaTo.Data.Hubs
 
             //Notify all members
             var listeners = s1.ConnectionStrings.Where(x => x.Value.ChatRoomID == chatRoom.ID).Select(x => x.Key);
-            foreach (var listener in listeners)
-            {
+            foreach (var listener in listeners) {
                 Clients.Client(listener).NewMessage(thisMessage);
             }
         }
@@ -107,7 +134,26 @@ namespace TiTaTo.Data.Hubs
 
         public override Task OnDisconnected(bool stopCalled)
         {
+            ConnectionInfo cxInfo = s1.ConnectionStrings[Context.ConnectionId];
+            User user = GetUserByID(cxInfo.UserID);
+
             s1.ConnectionStrings.Remove(Context.ConnectionId);
+
+            //Notify all members
+            if (cxInfo.ChatRoomID == Guid.Empty) {
+                var thisMessage = new Message()
+                {
+                    Content = user.Name + " has left the chat room",
+                    SenderID = ServerUserID,
+                    TimeStamp = DateTime.Now
+                };
+                var listeners = s1.ConnectionStrings.Where(x => x.Value.ChatRoomID == cxInfo.ChatRoomID).Select(x => x.Key);
+                foreach (var listener in listeners) {
+                    Clients.Client(listener).NewMessage(thisMessage);
+                }
+            }
+            
+
             return base.OnDisconnected(stopCalled);
         }
 
@@ -124,8 +170,7 @@ namespace TiTaTo.Data.Hubs
         {
             Guid output;
             bool parseSuccess = Guid.TryParse(inputString, out output);
-            if (!parseSuccess)
-            {
+            if (!parseSuccess) {
                 throw new HubException("Improper GUID passed.");
             }
             return output;
@@ -134,8 +179,7 @@ namespace TiTaTo.Data.Hubs
         private User GetUserByID(Guid userID)
         {
             User user = s1.Users.FirstOrDefault(u => u.ID == userID);
-            if (user == null)
-            {
+            if (user == null) {
                 throw new HubException("User does not exist");
             }
 
@@ -146,8 +190,7 @@ namespace TiTaTo.Data.Hubs
         {
             Guid userID = ParseGuid(userIDString);
             User user = s1.Users.FirstOrDefault(u => u.ID == userID);
-            if (user == null)
-            {
+            if (user == null) {
                 throw new HubException("User does not exist");
             }
 
@@ -158,8 +201,7 @@ namespace TiTaTo.Data.Hubs
         {
             var userID = s1.ConnectionStrings[connectionID].UserID;
             var user = s1.Users.FirstOrDefault(x => x.ID == userID);
-            if (user == null)
-            {
+            if (user == null) {
                 throw new HubException("User does not exist");
             }
             return user;
@@ -168,8 +210,7 @@ namespace TiTaTo.Data.Hubs
         private ChatRoom GetChatRoom(Guid roomID)
         {
             ChatRoom chatRoom = s1.ChatRooms.FirstOrDefault(x => x.ID == roomID);
-            if (chatRoom == null)
-            {
+            if (chatRoom == null) {
                 throw new HubException("Chat room does not exist");
             }
             return chatRoom;
@@ -179,8 +220,7 @@ namespace TiTaTo.Data.Hubs
         {
             Guid roomID = ParseGuid(roomIDString);
             ChatRoom chatRoom = s1.ChatRooms.FirstOrDefault(x => x.ID == roomID);
-            if (chatRoom == null)
-            {
+            if (chatRoom == null) {
                 throw new HubException("Chat room does not exist");
             }
             return chatRoom;

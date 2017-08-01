@@ -25,7 +25,7 @@ namespace TiTaTo.Data.DataAccess
         public List<User> Users { get; set; }
         public List<ChatRoom> ChatRooms { get; set; }
 
-        public Dictionary<string, ConnectionStringInfo> ConnectionStrings { get; set; }
+        public Dictionary<string, ConnectionInfo> ConnectionStrings { get; set; }
 
 
 
@@ -37,7 +37,7 @@ namespace TiTaTo.Data.DataAccess
         {            
             Users = new List<User>();
             ChatRooms = new List<ChatRoom>();
-            ConnectionStrings = new Dictionary<string, ConnectionStringInfo>();
+            ConnectionStrings = new Dictionary<string, ConnectionInfo>();
             
             Users.Add(new User()
             {

@@ -5,7 +5,7 @@ using System.Web;
 
 namespace TiTaTo.Data.Models
 {
-    public class ConnectionStringInfo
+    public class ConnectionInfo
     {
         public Guid UserID { get; set; }
         public Guid ChatRoomID { get; set; }

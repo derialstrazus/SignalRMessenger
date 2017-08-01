@@ -14,6 +14,7 @@ function initialize() {
     //prepare send Message
     $("#formMessageInput").submit(function (e) {
         sendMessage();
+        $("#messageInput").val("");
         return false;
     });
 
@@ -26,9 +27,6 @@ function initialize() {
 }
 
 chatHub.client.initialize = function (initializeDTO) {
-    //console.log(initializeDTO.users);
-    //console.log(initializeDTO.chatRooms);
-    
     RenderUsers(initializeDTO.users);
     RenderChatRooms(initializeDTO.chatRooms);
 }
@@ -72,10 +70,10 @@ function RenderChatRoomLink(chatRoom) {
     var divChatRooms = $("#divChatRooms");
     
     var divChatRoom = $(`<div id=chatroomlink${chatRoom.ID}></div>`).appendTo(divChatRooms);
-    var chatRoomLink = $("<a href='#'>" + chatRoom.RoomName + "</a> ").appendTo(divChatRoom);
+    var chatRoomLink = $("<a href='#'>" + chatRoom.RoomName + "</a>").appendTo(divChatRoom);
 
     chatRoomLink.click(function (e) {
-        EnterChatRoom(chatRoom.ID)
+        EnterChatRoom(chatRoom.ID);
     });
 }
 
@@ -119,21 +117,6 @@ function sendMessage() {
     }
 
     chatHub.server.sendMessage(messageToSend, chatRoomID);
-
-    //var sendThis = {
-    //    Content: messageToSend
-    //}
-    //APIPost("api/chatroom/" + chatRoomID + "/messages", sendThis, SendMessageSuccess, SendMessageFailure);
-    //$("#messageInput").val("");
-
-    //function SendMessageSuccess(data) {
-    //    GetChatRoomSuccess(data);
-    //}
-
-    //function SendMessageFailure(xhr, status, error) {
-    //    var message = "Failed to send message.  Server says: " + xhr.responseJSON.ExceptionMessage;
-    //    alert(message);
-    //}
 }
 
 chatHub.client.newMessage = function NewMessage(message) {
