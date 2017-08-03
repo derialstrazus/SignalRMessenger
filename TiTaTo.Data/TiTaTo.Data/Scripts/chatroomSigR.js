@@ -7,6 +7,8 @@ var chatHub = $.connection.chatHub;
 function initialize() {
     console.log("Start!");
 
+    $("#currentPlayer").append(`Logged in as ${playerName} (${playerID.substring(0, 8)})`);
+
     $.connection.hub.start()
         .done(StartConnectionSuccess)
         .fail(SignalRFailure);
@@ -32,7 +34,7 @@ chatHub.client.initialize = function (initializeDTO) {
 }
 
 var StartConnectionSuccess = function StartConnectionSuccess() {
-    chatHub.server.join(playerID).fail(JoinServerFailed);
+    chatHub.server.joinServer(playerID).fail(JoinServerFailed);
 }
 
 var JoinServerFailed = function JoinServerFailed(e) {
@@ -63,7 +65,7 @@ var RenderUserLink = function RenderUserLink(user) {
     var userLink = $(`<a href="#">${user.Name}</a>`).appendTo(divUser);
 
     userLink.click(function (e) {        
-        chatHub.server.createRoom(user.ID)
+        chatHub.server.inviteToChat(user.ID)
             .fail(SignalRFailure);
     });
 }
@@ -95,7 +97,7 @@ function EnterChatRoom(roomID) {
         .fail(SignalRFailure);
 }
 
-chatHub.client.roomEntered = function RoomEnetered(data) {
+chatHub.client.roomEntered = function RoomEntered(data) {
     enterTheRoom(data);
 }
 
@@ -106,6 +108,7 @@ chatHub.client.roomExists = function RoomExists(data) {
 
 var enterTheRoom = function enterTheRoom(data) {
     console.log("Entered " + data.RoomName);
+    $("#currentRoom").empty().append(`- Talking in ${data.RoomName}`);
     //TODO: Check if this room exists on room list.  If not, add it.
 
     $("#tablePastMessages").empty();
@@ -153,7 +156,15 @@ chatHub.client.newMessage = function NewMessage(message) {
     $("#tablePastMessages").append(`<tr><td class="sendername">${message.SenderName}</td><td class="sentmessage">${message.Content}</td><td class="senderdate">${printDate}</td></tr>`);
 };
 
-
+chatHub.client.invitationReceived = function InvitationReceived(invitingUser, destinationChatRoomID) {
+    var invitationMessage = invitingUser + " wants to chat with you.";
+    var r = confirm(invitationMessage);
+    if (r === true) {
+        chatHub.server.enterRoom(destinationChatRoomID).fail(SignalRFailure);
+    } else {
+        return;
+    }
+}
 
 
 
