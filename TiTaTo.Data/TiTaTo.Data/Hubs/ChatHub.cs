@@ -25,7 +25,7 @@ namespace TiTaTo.Data.Hubs
 
         SingletonDB s1 = SingletonDB.Instance;
 
-        public Guid ServerUserID
+        private Guid ServerUserID
         {
             get
             {
@@ -45,7 +45,11 @@ namespace TiTaTo.Data.Hubs
             //Help client render
             var chatRooms = s1.ChatRooms
                 .Where(x => x.Users.Any(y => y.ID == user.ID) || x.IsPublic)
-                .Select(c => new { ID = c.ID, RoomName = c.RoomName });
+                .Select(c => new {
+                    ID = c.ID,
+                    RoomName = c.RoomName,
+                    HasReadLatest = c.Users.Any(x => x.ID == user.ID) ? c.Users.First(x => x.ID == user.ID).HasReadLatest : false
+                });
             IEnumerable<User> users = s1.Users;
             Clients.Caller.Initialize(new
             {
@@ -96,7 +100,11 @@ namespace TiTaTo.Data.Hubs
                 {
                     var chatRooms = s1.ChatRooms
                         .Where(x => x.Users.Any(y => y.ID == user.ID) || x.IsPublic)
-                        .Select(c => new { ID = c.ID, RoomName = c.RoomName });
+                        .Select(c => new {
+                            ID = c.ID,
+                            RoomName = c.RoomName,
+                            HasReadLatest = c.Users.Any(x => x.ID == user.ID) ? c.Users.First(x => x.ID == user.ID).HasReadLatest : false
+                        });
                     IEnumerable<User> users = s1.Users;
                     var sendThis = new { chatRooms = chatRooms.ToList(), users = users.ToList() };
 
@@ -140,11 +148,16 @@ namespace TiTaTo.Data.Hubs
                 }
             }
 
+            
+
             //establish location of this connection id
             s1.ConnectionStrings[Context.ConnectionId].ChatRoomID = chatRoom.ID;
 
             //let client know room is entered
             Clients.Caller.RoomEntered(chatRoom);
+
+            //if a user has entered the room, then he must have read the messages
+            chatRoom.Users.First(x => x.ID == user.ID).HasReadLatest = true;
 
             //Notify all members
             var thisMessage = new Message()
@@ -177,13 +190,31 @@ namespace TiTaTo.Data.Hubs
                 TimeStamp = DateTime.Now
             };
             chatRoom.Messages.Add(newMessage);
-
-            //Notify all members
-            var listeners = s1.ConnectionStrings.Where(x => x.Value.ChatRoomID == chatRoom.ID).Select(x => x.Key);
-            foreach (var listener in listeners)
+            chatRoom.LastUpdated = newMessage.TimeStamp;            
+                        
+            //Notify all users who are currently in that room
+            var currentListeners = s1.ConnectionStrings.Where(x => x.Value.ChatRoomID == chatRoom.ID);
+            foreach (var listener in currentListeners)
             {
-                Clients.Client(listener).NewMessage(newMessage);
+                GetUserByConnectionID(listener.Key).HasReadLatest = true;
+                Clients.Client(listener.Key).CurrentRoomNewMessage(newMessage);
             }
+
+            var currentListenerIds = currentListeners.Select(x => x.Value.UserID);
+            var otherUsers = chatRoom.Users.Where(x => currentListenerIds.All(y => y != x.ID));
+
+            //Notify all other members of that room
+            foreach (var otheruser in otherUsers)
+            {
+                otheruser.HasReadLatest = false;                
+                if (s1.ConnectionStrings.Any(x => x.Value.UserID == otheruser.ID))
+                {
+                    var otherUserCxID = s1.ConnectionStrings.FirstOrDefault(x => x.Value.UserID == otheruser.ID).Key;
+                    Clients.Client(otherUserCxID).OtherRoomNewMessage(chatRoom.ID);
+                }
+                
+            }
+            //BUG: Doesn't seem to work for general chat
         }
 
 

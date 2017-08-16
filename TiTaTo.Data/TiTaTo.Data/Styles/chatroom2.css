@@ -68,7 +68,11 @@ body {
 }
 
 .row.chatrooms {    
-    /*height: 100px;*/
+    /*height: 100px;*/    
+}
+
+.NewMessage {    
+    border: 1px solid black;
 }
 
 .row.activeusers {
